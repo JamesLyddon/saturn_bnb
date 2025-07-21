@@ -42,4 +42,20 @@ Everyone in the team should then clone this fork to their local machine to work 
 
 DATABASE_NAME = 'saturnbnb'
 
-dkjhskjdh`kjhkj
+make a new branch
+
+```shell
+ git switch -c some-new-branch
+```
+
+push to github and make a new branch
+
+```shell
+git push --set-upstream origin some-new-branch
+```
+
+go back to main
+
+```shell
+git switch main
+```
