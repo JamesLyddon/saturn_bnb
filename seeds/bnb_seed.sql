@@ -17,7 +17,7 @@ CREATE TABLE spaces (
     host_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    daily_price NUMERIC(10, 2) NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
     address VARCHAR(255) NOT NULL,
     FOREIGN KEY (host_id) REFERENCES users(id)
 );
@@ -44,20 +44,20 @@ INSERT INTO users (username, first_name, last_name, password, email, phone_numbe
 
 -- create spaces
 -- johndoe
-INSERT INTO spaces (host_id, title, description, daily_price, address) VALUES
+INSERT INTO spaces (host_id, title, description, price, address) VALUES
 (1, 'Cozy Apartment in Central London', 'A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.', 120.00, '10 Downing St, London, England, United Kingdom'),
 (1, 'Spacious Family Home in Countryside', 'Beautiful detached house with a large garden, ideal for family holidays. Close to scenic walking trails.', 250.00, 'Rural Lane 5, Oxford, England, United Kingdom');
 
 -- janesmith
-INSERT INTO spaces (host_id, title, description, daily_price, address) VALUES
+INSERT INTO spaces (host_id, title, description, price, address) VALUES
 (2, 'Beachfront Villa with Ocean Views', 'Luxury villa directly on the coast, stunning views and private beach access. Perfect for a relaxing getaway.', 350.50, 'Ocean Drive 123, Brighton, England, United Kingdom');
 
 -- petermiller
-INSERT INTO spaces (host_id, title, description, daily_price, address) VALUES
+INSERT INTO spaces (host_id, title, description, price, address) VALUES
 (3, 'Charming Edinburgh Loft', 'Stylish loft apartment in the historic Old Town of Edinburgh. Ideal for exploring the city on foot.', 150.00, 'Royal Mile 42, Edinburgh, Scotland, United Kingdom');
 
 -- alicejones
-INSERT INTO spaces (host_id, title, description, daily_price, address) VALUES
+INSERT INTO spaces (host_id, title, description, price, address) VALUES
 (4, 'Rustic Cottage in Scottish Highlands', 'Escape to the tranquil beauty of the Highlands in this quaint stone cottage. Perfect for nature lovers.', 90.00,'Loch Ness Road, Inverness, Scotland, United Kingdom');
 
 -- create bookings
