@@ -1,13 +1,12 @@
 import os
 from flask import Flask, request, render_template, url_for, redirect
 from lib.database_connection import get_flask_database_connection
-from flask_login import UserMixin
+from wtforms.validators import ValidationError
 from lib.dummy_user import Dummy
 from lib.dummy_user_repo import DummyRepo
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, EmailField
-from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
+from lib.forms.register_form import RegisterForm
+from lib.forms.login_form import LoginForm
 
 # Create a new Flask app
 app = Flask(__name__)
@@ -15,55 +14,24 @@ app = Flask(__name__)
 # Password hashing
 bycrpt = Bcrypt(app)
 
-# Example for testing
+# Example for development
 app.config['SECRET_KEY'] = 'supersecretkey'
 
-# Put this in its own file
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[
-        InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    first_name = StringField(validators=[
-        InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "First name"}
-    )
-
-    last_name = StringField(validators=[
-        InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "Last name"}
-    )
+# check username exists
+def validate_username(username):
+    connection = get_flask_database_connection(app)
+    repo = DummyRepo(connection)
+    users = repo.all()
+    username_exists = False
     
-    password = PasswordField(validators=[
-        InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    for user in users:
+        if user.username == username:
+            username_exists = True
+    
+    if username_exists:
+        raise ValidationError(
+            'That username already exists. Please choose a different one.')
 
-    email = EmailField(validators=[
-        InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Email"})
-
-    phone_number = StringField(validators=[
-        InputRequired(), Length(min=11, max=20)], render_kw={"placeholder": "Phone number"})
-
-    submit = SubmitField('Register')
-
-    def validate_username(self, username):
-        connection = get_flask_database_connection(app)
-        repo = DummyRepo(connection)
-        users = repo.all()
-        username_exists = False
-        
-        for user in users:
-            if user.username == username:
-                username_exists = True
-        
-        if username_exists:
-            raise ValidationError(
-                'That username already exists. Please choose a different one.')
-
-class LoginForm(FlaskForm):
-    username = StringField(validators=[
-        InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    password = PasswordField(validators=[
-        InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField('Login')
 
 # == Your Routes Here ==
 
