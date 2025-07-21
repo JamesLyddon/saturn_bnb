@@ -6,7 +6,10 @@
     <title>Dashboard</title>
   </head>
   <body>
-    <h1>Hello! You are currently logged in</h1>
+    {% if current_user.is_authenticated %}
+    <h1>Hello {{ current_user.first_name }}! You are currently logged in</h1>
+    {% endif %}
+    <br />
     <a href="{{url_for('logout')}}">Log out</a>
   </body>
 </html>

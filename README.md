@@ -59,3 +59,22 @@ go back to main
 ```shell
 git switch main
 ```
+
+===================================
+
+Flask-login docs https://flask-login.readthedocs.io/en/latest/
+
+With Flask-login you can now reference the logged in user within any template like so
+
+```html
+{% if current_user.is_authenticated %} Hi {{ current_user.name }}! {% endif %}
+```
+
+You can also prevent users from accessing a page if they are not logged in with the `login_required` decorator
+
+```python
+@app.route("/settings")
+@login_required
+def settings():
+    pass
+```
