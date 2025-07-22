@@ -12,3 +12,11 @@ def test_create_new_space(db_connection, page, test_web_address):
 
     page.fill("input[name=title]", 'a lovely house in newcastle')
     page.fill("input[name=description]", '5 bedroom house with pool')
+    page.fill("input[name=price]", '100')
+    page.fill("input[name=address]", '124 Oxford Street')
+
+    page.click("text=Create Space")
+
+    spaces_titles = page.locator(".test-space-title")
+
+    expect(spaces_titles).to_have_text(["Cozy Apartment in Ce...", "Spacious Family Home...", 'Beachfront Villa wit...', 'Charming Edinburgh L...', 'Rustic Cottage in Sc...', 'a lovely house in ne...'])

@@ -9,7 +9,9 @@
         <p class="subtitle is-4">Find your perfect stay.</p>
       </div>
       <div class="media-right">
-        <a href="" class="button is-light is-outlined">Create Listing</a>
+        <a href="/spaces/new" class="button is-light is-outlined"
+          >Create Listing</a
+        >
       </div>
     </div>
     <div class="columns is-multiline is-variable is-3">
@@ -29,7 +31,9 @@
           <div class="card-content">
             <div class="media">
               <div class="media-content">
-                <p class="title is-4">{{ space.title[:20] }}...</p>
+                <p class="title is-4 test-space-title">
+                  {{ space.title[:20] }}...
+                </p>
                 <p class="subtitle is-6">{{ space.address[:20] }}</p>
               </div>
             </div>
