@@ -5,12 +5,14 @@
   <div class="container">
     <div class="media">
       <div class="media-content">
-        <h1 class="title is-2" style="color: white">Available Spaces</h1>
-        <p class="subtitle is-4">Find your perfect stay.</p>
+        <h1 class="title is-2 t-headline" style="color: white">
+          Available Spaces
+        </h1>
+        <p class="subtitle is-4 t-sub-heading">Find your perfect stay.</p>
       </div>
       <div class="media-right">
-        <a href="/spaces/new" class="button is-light is-outlined"
-          >Create Listing</a
+        <a href="/spaces/new" class="button is-light is-outlined t-create-space-btn"
+          >Create Space</a
         >
       </div>
     </div>
@@ -34,7 +36,9 @@
                 <p class="title is-4 t-space-title">
                   {{ space.title[:20] }}...
                 </p>
-                <p class="subtitle is-6">{{ space.address[:20] }}</p>
+                <p class="subtitle is-6 t-space-address">
+                  {{ space.address[:20] }}
+                </p>
               </div>
             </div>
 
