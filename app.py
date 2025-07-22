@@ -49,7 +49,7 @@ def validate_username(username):
         raise ValidationError(
             'That username already exists. Please choose a different one.')
 
-# ==== Register, Login, Logout Routes ====
+# ==== Register, Login, Logout, Dashboard Routes ====
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -63,14 +63,15 @@ def login():
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
                     login_user(user)
-                    return redirect(url_for('dashboard'))
+                    return redirect(url_for('get_all_spaces'))
 
     return render_template('login.html', form=form)
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html')
+# to be deleted ❌
+# @app.route('/dashboard', methods=['GET', 'POST'])
+# @login_required
+# def dashboard():
+#     return render_template('dashboard.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -96,15 +97,16 @@ def register():
     
     return render_template('register.html', form=form)
 
-# to be deleted ❌
-@app.route('/users', methods=['GET'])
-def users():
-    connection = get_flask_database_connection(app)
-    repo = UserRepository(connection)
-    users = repo.all()
-    return render_template('users.html', users=users)
+# for development - to be deleted ❌
+# @app.route('/users', methods=['GET'])
+# def users():
+#     connection = get_flask_database_connection(app)
+#     repo = UserRepository(connection)
+#     users = repo.all()
+#     return render_template('users.html', users=users)
     
 # ==== Spaces Routes ====
+@app.route('/', methods=['GET'])
 @app.route('/spaces', methods=['GET'])
 def get_all_spaces():
     connection = get_flask_database_connection(app)
