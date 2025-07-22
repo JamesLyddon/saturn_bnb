@@ -94,5 +94,5 @@ def test_get_spaces(page, test_web_address, db_connection):
     expect(first_title).to_have_text("Cozy Apartment in Ce...")
     expect(last_title).to_have_text("Rustic Cottage in Sc...")
 
-    expect(first_address).to_have_text("10 Downing St, Londo")
-    expect(last_address).to_have_text("Loch Ness Road, Inve")
+    expect(first_address).to_have_text("10 Downing St, Londo...")
+    expect(last_address).to_have_text("Loch Ness Road, Inve...")
