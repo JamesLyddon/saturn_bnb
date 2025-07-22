@@ -67,12 +67,6 @@ def login():
 
     return render_template('login.html', form=form)
 
-# to be deleted ❌
-# @app.route('/dashboard', methods=['GET', 'POST'])
-# @login_required
-# def dashboard():
-#     return render_template('dashboard.html')
-
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
@@ -96,14 +90,6 @@ def register():
         return redirect(url_for('login'))
     
     return render_template('register.html', form=form)
-
-# for development - to be deleted ❌
-# @app.route('/users', methods=['GET'])
-# def users():
-#     connection = get_flask_database_connection(app)
-#     repo = UserRepository(connection)
-#     users = repo.all()
-#     return render_template('users.html', users=users)
     
 # ==== Spaces Routes ====
 @app.route('/', methods=['GET'])
@@ -115,11 +101,13 @@ def get_all_spaces():
     return render_template('spaces.html', spaces=spaces)
 
 @app.route('/spaces/new', methods=["GET"])
+@login_required
 def get_new_space():
     return render_template('spaces/new.html')
 
 
 @app.route('/spaces', methods=["POST"])
+@login_required
 def create_space():
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
