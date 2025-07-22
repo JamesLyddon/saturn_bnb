@@ -12,3 +12,7 @@ class User:
         
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+    
+    def __repr__(self):
+        return f"User({self.id}, {self.username}, {self.first_name}, {self.last_name}, {self.password}, {self.email}, {self.phone_number})"
+    
