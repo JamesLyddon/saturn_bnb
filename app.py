@@ -1,7 +1,8 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from lib.database_connection import get_flask_database_connection
 from lib.space_repository import SpaceRepository
+from lib.space import Space
 
 # Create a new Flask app
 app = Flask(__name__)
@@ -22,6 +23,29 @@ def get_all_spaces():
     repo = SpaceRepository(connection)
     spaces = repo.all()
     return render_template('spaces.html', spaces=spaces)
+
+@app.route('/spaces/new', methods=["GET"])
+def get_new_space():
+    return render_template('spaces/new.html')
+
+
+@app.route('/spaces', methods=["POST"])
+def create_space():
+    connection = get_flask_database_connection(app)
+    repo = SpaceRepository(connection)
+
+    # get fields from request form
+    title = request.form['title']
+    description = request.form['description']
+    price = request.form['price']
+    address = request.form['address']
+    host_id = 1
+
+    space = Space(None, host_id, title, description, price, address)
+
+    repo.create(space)
+
+    return redirect('/spaces')
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
