@@ -19,7 +19,7 @@ CREATE TABLE spaces (
     description TEXT,
     price NUMERIC(10, 2) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    FOREIGN KEY (host_id) REFERENCES users(id)
+    FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE 
 );
 
 CREATE TABLE bookings (

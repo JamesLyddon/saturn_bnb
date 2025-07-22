@@ -1,0 +1,24 @@
+from lib.booking import Booking
+class BookingRepository:
+    
+    def __init__(self, connection):
+        self._connection = connection
+
+    
+    def all(self):
+        rows = self._connection.execute('SELECT * FROM bookings')
+        bookings = []
+        for row in rows:
+            item = Booking(row["id"], row["guest_id"], row["space_id"], row["date"], row["status"])
+            bookings.append(item)
+        return bookings
+    
+    def find(self,booking_id):
+        rows = self._connection.execute('SELECT * FROM bookings WHERE id = %s', [booking_id])
+        row = rows[0]
+        return Booking(row["id"], row["guest_id"], row["space_id"], row["date"], row["status"])
+    
+    def create(self, booking):
+        self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
+                                 [booking.guest_id, booking.space_id, booking.date, booking.status])
+        return None
