@@ -1,7 +1,7 @@
 
 
 class Space:
-    def __init__(self, id, title, description, price, address, host_id):
+    def __init__(self, id, host_id, title, description, price, address):
         self.id = id
         self.title = title
         self.description = description
@@ -15,4 +15,4 @@ class Space:
 
     def __repr__(self):
         
-        return f"Space({self.id}, {self.title}, {self.description}, {self.price}, {self.address}, {self.host_id})"
+        return f"Space({self.id}, {self.host_id}, {self.title}, {self.description}, {self.price}, {self.address})"
