@@ -23,3 +23,13 @@ def test_find_space_by_id(db_connection):
     single_space = space_repo.find(1)
 
     assert single_space == Space(1, 'Cozy Apartment in Central London', 'A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.', 120.00, '10 Downing St, London, England, United Kingdom', 1)
+
+def test_create_space(db_connection):
+    db_connection.seed('seeds/bnb_seed.sql')
+    space_repo = SpaceRepository(db_connection)
+
+    space_repo.create(Space(None, 'Cozy Apartment in Leicester', 'A charming one-bedroom apartment right in the heart of Leicester', 100, 'one cabot place', 3))
+
+    result = space_repo.all()
+
+    assert result[-1] == Space(6, 'Cozy Apartment in Leicester', 'A charming one-bedroom apartment right in the heart of Leicester', 100, 'one cabot place', 3)
