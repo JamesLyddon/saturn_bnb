@@ -1,29 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-  </head>
-  <body>
-    <h1>Register</h1>
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Login{% endblock %}</h1>
+{% endblock %} {% block content %}
+<h1 class="title is-2 t-headline" style="color: #04d1b2">Register</h1>
 
-    <form method="POST" action="">
-      {{ form.hidden_tag() }}
-      <br />
-      {{ form.username }}
-      <br />
-      {{ form.first_name }}
-      <br />
-      {{ form.last_name }}
-      <br />
-      {{ form.password }}
-      <br />
-      {{ form.email }}
-      <br />
-      {{form.phone_number }}
-      <br />
-      {{ form.submit }}
-    </form>
-  </body>
-</html>
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+  <br />
+  {{ form.username }}
+  <br />
+  {{ form.first_name }}
+  <br />
+  {{ form.last_name }}
+  <br />
+  {{ form.password }}
+  <br />
+  {{ form.email }}
+  <br />
+  {{form.phone_number }}
+  <br />
+  {{ form.submit }}
+</form>
+{% endblock %}

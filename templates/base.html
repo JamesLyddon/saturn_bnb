@@ -18,7 +18,7 @@
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="">
+        <a class="navbar-item" href="{{ url_for('get_all_spaces') }}">
           <h1 class="title is-1" style="color: #04d1b2;">🪐 saturn bnb</h1>
         </a>
       </div>
@@ -27,11 +27,12 @@
             <div class="buttons">
               {% if current_user.is_authenticated %}
                 <a href="" class="button is-info is-outlined"><strong>Hello {{ current_user.first_name }}!</strong></a>
+                <a href="{{ url_for('logout') }}" class="button is-warning is-outlined"><strong>Log out</strong></a>
               {% else %}
-                <a href="{{ url_for('register') }}" class="button is-primary is-outlined">
+                <a href="{{ url_for('register') }}" class="button is-warning is-outlined">
                   <strong>Register</strong>
                 </a>
-              <a href="{{ url_for('login') }}" class="button is-primary is-outlined"><strong>Log In</strong></a>
+              <a href="{{ url_for('login') }}" class="button is-info is-outlined"><strong>Log In</strong></a>
             {% endif %}
             </div>
           </div>
