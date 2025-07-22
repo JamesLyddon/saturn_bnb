@@ -17,6 +17,6 @@ def test_create_new_space(db_connection, page, test_web_address):
 
     page.click("text=Create Space")
 
-    spaces_titles = page.locator(".test-space-title")
+    spaces_titles = page.locator(".t-space-title")
 
     expect(spaces_titles).to_have_text(["Cozy Apartment in Ce...", "Spacious Family Home...", 'Beachfront Villa wit...', 'Charming Edinburgh L...', 'Rustic Cottage in Sc...', 'a lovely house in ne...'])
