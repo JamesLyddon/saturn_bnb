@@ -1,0 +1,61 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Spaces{% endblock %}</h1>
+{% endblock %} {% block content %}
+<section class="section">
+  <div class="container">
+    <div class="media">
+      <div class="media-content">
+        <h1 class="title is-2" style="color: white">Available Spaces</h1>
+        <p class="subtitle is-4">Find your perfect stay.</p>
+      </div>
+      <div class="media-right">
+        <a href="" class="button is-light is-outlined">Create Listing</a>
+      </div>
+    </div>
+    <div class="columns is-multiline is-variable is-3">
+      {% for space in spaces %}
+      <div
+        class="column is-one-half-desktop is-one-third-tablet is-full-mobile"
+      >
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img
+                src="https://bulma.io/assets/images/placeholders/1280x960.png"
+                alt="Placeholder image"
+              />
+            </figure>
+          </div>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <p class="title is-4">{{ space.title[:20] }}...</p>
+                <p class="subtitle is-6">{{ space.address[:20] }}</p>
+              </div>
+            </div>
+
+            <div class="content">{{ space.description[:30] }}...</div>
+
+            <div class="media">
+              <div class="media-content">
+                <h1 class="title is-3">£{{ space.price }}</h1>
+              </div>
+              <div class="media-right">
+                <a class="title is-3" href=""
+                  ><i class="fa-solid fa-arrow-right" style="color: white"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- <div class="columns is-multiline is-variable is-3">
+  {% for space in spaces %}
+  <div class="box has-text-centered">{{ space }}</div>
+  {% endfor %}
+</div> -->
+{% endblock %}
