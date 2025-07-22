@@ -23,6 +23,10 @@ def get_all_spaces():
     spaces = repo.all()
     return render_template('spaces.html', spaces=spaces)
 
+@app.route('/spaces/new', methods=["GET"])
+def get_new_space():
+    return render_template('spaces/new.html')
+
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
 # if started in test mode.
