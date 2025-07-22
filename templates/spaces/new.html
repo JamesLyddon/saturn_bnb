@@ -7,28 +7,34 @@
     <div class="field">
       <label class="label" for="title">Title</label>
       <div class="control">
-        <input class="input" type="text" id="title" name="title" />
+        <input class="input" type="text" id="title" name="title" required />
       </div>
     </div>
     <div class="field">
       <label class="label" for="description">Description</label>
       <div class="control">
-        <input class="input" type="text" id="description" name="description" />
+        <input
+          class="input"
+          type="text"
+          id="description"
+          name="description"
+          required
+        />
       </div>
     </div>
     <div class="field">
       <label class="label" for="price">Price</label>
       <div class="control">
-        <input class="input" type="text" id="price" name="price" />
+        <input class="input" type="number" id="price" name="price" required />
       </div>
     </div>
     <div class="field">
       <label class="label" for="address">Address</label>
       <div class="control">
-        <input class="input" type="text" id="address" name="address" />
+        <input class="input" type="text" id="address" name="address" required />
       </div>
     </div>
-    <input class="button is-link" type="submit" value="Create Space" />
+    <input class="button is-link" type="submit" value="Create Space" required />
   </form>
 </section>
 {% endblock %}
