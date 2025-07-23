@@ -1,7 +1,7 @@
 
 
 class Space:
-    def __init__(self, id, host_id, title, description, price, address, image_url):
+    def __init__(self, id, host_id, title, description, price, address, image_url='https://bulma.io/assets/images/placeholders/1280x960.png'):
         self.id = id
         self.title = title
         self.description = description

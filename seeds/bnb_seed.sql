@@ -19,7 +19,7 @@ CREATE TABLE spaces (
     description TEXT,
     price NUMERIC(10, 2) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    image_url VARCHAR(2048) NOT NULL DEFAULT 'https://bulma.io/assets/images/placeholders/1280x960.png',
+    image_url VARCHAR(2048) DEFAULT 'https://bulma.io/assets/images/placeholders/1280x960.png',
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE 
 );
 
