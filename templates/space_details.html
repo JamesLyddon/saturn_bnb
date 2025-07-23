@@ -1,0 +1,92 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Book Space{% endblock %}</h1>
+{% endblock %} {% block content %}
+
+<section class="section">
+  <div class="title-container" style="margin-bottom: 1.5rem">
+    <h1 class="title is-1">Cozy Apartment in Central London</h1>
+    <h2 class="subtitle is-2">10 Downing Street, London, SW1A 2AB</h2>
+  </div>
+
+ <div class="columns is-multiline is-variable is-2">
+    <div class="container">
+    <div class="columns">
+        
+      <div class="column">
+        <div class="box">
+          <div class="card">
+             <figure class="image is-4x200">
+              <img
+                src="https://bulma.io/assets/images/placeholders/1280x960.png"
+                alt="Placeholder image"
+              />
+            </figure>
+            <h4 class="subtitle is-4">A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.</h4>
+            <h2 class="subtitle is-2"> </h2>
+            <h1 class="title is-3 is-primary">£120.00 per night</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <h3 class="subtitle is-3">Select a date you would like to visit</h3>
+        <div class="box">
+          <div class="card">
+             <input type="date">
+             <div class="month">
+                    <ul>
+                        <li class="prev">&#10094;</li>
+                        <li class="next">&#10095;</li>
+                        <li>August<br><span style="font-size:18px">2021</span></li>
+                    </ul>
+                    </div>
+
+                    <ul class="weekdays">
+                    <li>Mo</li>
+                    <li>Tu</li>
+                    <li>We</li>
+                    <li>Th</li>
+                    <li>Fr</li>
+                    <li>Sa</li>
+                    <li>Su</li>
+                    </ul>
+
+                    <ul class="days">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li><span class="active">10</span></li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    
+                </ul>
+             <button class="button is-white">Book Now</button>
+             
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+
+  </script>
+</section>
+
+
+
+{% endblock %}
