@@ -13,6 +13,9 @@ from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
 from lib.booking_repository import BookingRepository
+from lib.request import Request
+from lib.request_repository import RequestRepository
+
 
 # ==== Set up ====
 # Create a new Flask app
@@ -153,7 +156,11 @@ def get_all_requests():
     spaces = spaces_repo.all()
     users_repo = UserRepository(connection)
     users = users_repo.all()
-    return render_template('requests.html', bookings=bookings, spaces=spaces, users=users)
+    
+    requests_repo = RequestRepository(connection)
+    requests = requests_repo.all()
+    
+    return render_template('requests.html', requests=requests, bookings=bookings, spaces=spaces, users=users)
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
