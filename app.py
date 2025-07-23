@@ -90,7 +90,23 @@ def register():
         return redirect(url_for('login'))
     
     return render_template('register.html', form=form)
-    
+
+# This is already handled by flask login above
+# @app.route('/register', methods=["GET"])
+# def get_register():
+#     return render_template('register.html')
+
+# @app.route('/register', methods=["POST"])
+# def post_register():
+#     username = request.form.get('username')
+#     first_name = request.form.get('first_name')
+#     last_name = request.form.get('last_name')
+#     password = request.form.get('password')
+#     email = request.form.get('email')
+#     phone_number = request.form.get('phone_number')
+
+#     return f"User succesfully registered!", 200
+
 # ==== Spaces Routes ====
 @app.route('/', methods=['GET'])
 @app.route('/spaces', methods=['GET'])
@@ -100,30 +116,13 @@ def get_all_spaces():
     spaces = repo.all()
     return render_template('spaces.html', spaces=spaces)
 
-
-@app.route('/register', methods=["GET"])
-def get_register():
-    return render_template('register.html')
-
-@app.route('/register', methods=["POST"])
-def post_register():
-    username = request.form.get('username')
-    first_name = request.form.get('first_name')
-    last_name = request.form.get('last_name')
-    password = request.form.get('password')
-    email = request.form.get('email')
-    phone_number = request.form.get('phone_number')
-
-    return f"User succesfully registered!", 200
-
 @app.route('/spaces/new', methods=["GET"])
 @login_required
 def get_new_space():
     return render_template('spaces/new.html')
 
-
 @app.route('/spaces', methods=["POST"])
-@login_required
+# @login_required
 def create_space():
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
