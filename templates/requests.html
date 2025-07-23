@@ -1,0 +1,176 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Requests{% endblock %}</h1>
+{% endblock %} {% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <h2 class="title is-4 has-text-centered has-text-info">Bookings Received</h2>
+        <div class="box">
+
+            {% if current_user.is_authenticated %} 
+            {% for booking in bookings%} {%
+                    if current_user.id == spaces[booking.space_id - 1].host_id %}
+                    <div class="card">
+                        <div class="card-image">
+                        <figure class="image is-4by3">
+                            <img
+                            src="https://bulma.io/assets/images/placeholders/1280x960.png"
+                            alt="Placeholder image"
+                            />
+                        </figure>
+                        </div>
+                        <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                            <p class="title is-4 t-space-title">
+                                {{ spaces[booking.space_id - 1].title }}
+                            </p>
+                            <p class="subtitle is-6 t-space-address">
+                                {{ spaces[booking.space_id - 1].address }}
+                            </p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            {{ spaces[booking.space_id - 1].description }}
+                        </div>
+
+                        <div class="media">
+                            <div class="media-content">
+                            <h1 class="title is-3 is-primary">
+                                £{{ spaces[booking.space_id - 1].price }}
+                            </h1>
+                            </div>
+                            <div class="media-right">
+                            <h1 class="title is-3 is-primary">{{ booking.date }}</h1>
+                            </div>
+                        </div>
+
+                        <div class="media">
+                            <div class="media-content">
+                            <h4 class="is-size-4 is-primary">guest contact</h4>
+                            <h4 class="title is-size-4 is-primary">
+                                {{ users[booking.guest_id - 1].email }}
+                            </h4>
+                            </div>
+                            <div class="media-right">
+                                {% if booking.status == 'pending' %}
+                                    <a
+                                    href=""
+                                    class="button is-success is-outlined mt-5"
+                                    >Approve</a
+                                    >
+                                    <a
+                                    href=""
+                                    class="button is-danger is-outlined mt-5 ml-2"
+                                    >Reject</a
+                                    >
+                                {% else%}
+                                    <h4 class="is-size-4 is-primary">status</h4>
+                                    {% if booking.status == 'pending'%}
+                                        <h1 class="title is-size-4 has-text-warning">
+                                    {% endif %}
+                                    {% if booking.status == 'confirmed'%}
+                                        <h1 class="title is-size-4 has-text-success">
+                                    {% endif %}
+                                    {% if booking.status == 'rejected'%}
+                                        <h1 class="title is-size-4 has-text-danger">
+                                    {% endif %}
+                                    {{ booking.status }}
+                                    </h1>
+                                {% endif %}
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                    {% endfor %}
+
+                    
+                    {% endif %}
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="column">
+        <h2 class="title is-4 has-text-centered has-text-warning">Bookings Requested</h2>
+        <div class="box">
+          {% if current_user.is_authenticated %} 
+          {% for booking in bookings %} 
+          {% if current_user.id == booking.guest_id %}
+          <div class="card">
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <img
+                  src="https://bulma.io/assets/images/placeholders/1280x960.png"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="media">
+                <div class="media-content">
+                  <p class="title is-4 t-space-title">
+                    {{ spaces[booking.space_id - 1].title }}
+                  </p>
+                  <p class="subtitle is-6 t-space-address">
+                    {{ spaces[booking.space_id - 1].address }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="content">
+                {{ spaces[booking.space_id - 1].description }}
+              </div>
+
+              <div class="media">
+                <div class="media-content">
+                  <h1 class="title is-3 is-primary">
+                    £{{ spaces[booking.space_id - 1].price }}
+                  </h1>
+                </div>
+                <div class="media-right">
+                  <h1 class="title is-3 is-primary">{{ booking.date }}</h1>
+                </div>
+              </div>
+
+              <div class="media">
+                <div class="media-content">
+                  <h4 class="is-size-4 is-primary">host contact</h4>
+                  <h4 class="title is-size-4 is-primary">
+                    {{ users[spaces[booking.space_id - 1].host_id].email }}
+                  </h4>
+                </div>
+                <div class="media-right">
+                  <h4 class="is-size-4 is-primary">status</h4>
+                  {% if booking.status == 'pending'%}
+                    <h1 class="title is-size-4 has-text-warning">
+                  {% endif %}
+                  {% if booking.status == 'confirmed'%}
+                    <h1 class="title is-size-4 has-text-success">
+                  {% endif %}
+                  {% if booking.status == 'rejected'%}
+                    <h1 class="title is-size-4 has-text-danger">
+                  {% endif %}
+                  
+                  
+                  {{ booking.status }}
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endif %} {% endfor %} {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

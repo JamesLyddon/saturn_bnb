@@ -83,3 +83,28 @@ def test_get_spaces(page, test_web_address, db_connection):
 
     expect(first_address).to_have_text("10 Downing St, Londo...")
     expect(last_address).to_have_text("Loch Ness Road, Inve...")
+
+"""
+Tests for the request page routes 
+"""
+def test_get_request_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+    print("seed applied")
+    page.goto(f"http://{test_web_address}/login")
+    print(f"opened login page {page.url}")
+    # page.locator(".control")
+    input = page.locator(".control")
+    username = input[0]
+    username.fill('johndoe')
+    password = input[1]
+    password.fill('SuperSecret999')
+    # page.fill('input[name="Username"]', 'johndoe')
+    # page.fill('input[name="Password"]', 'SuperSecret999')
+    print("filled login form")
+    page.click('button[type="Login"]')
+    page.goto(f"http://{test_web_address}/requests")
+    
+    expect(page.locator("text=Bookings Received")).to_be_visible()
+    expect(page.locator("text=Approve")).to_be_visible()
+    expect(page.locator("text=Reject")).to_be_visible()
+    # expect(page.locator("h1.has-text-warning")).to_have_text("pending")
