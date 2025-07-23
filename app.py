@@ -141,6 +141,15 @@ def create_space():
     return redirect('/spaces')
  
 
+@app.route('spaces/<int:id>', methods = ["GET"])
+def get_space_with_id(id):
+    connection = get_flask_database_connection(app)
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+
+    return render_template('/spaces/show.html', space = space)
+
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
 # if started in test mode.
