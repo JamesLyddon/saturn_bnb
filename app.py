@@ -132,7 +132,7 @@ def create_space():
     description = request.form['description']
     price = request.form['price']
     address = request.form['address']
-    host_id = 1
+    host_id = current_user.id
 
     space = Space(None, host_id, title, description, price, address)
 
