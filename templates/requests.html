@@ -8,9 +8,10 @@
         <h2 class="title is-4 has-text-centered has-text-info">Bookings Received</h2>
         <div class="box">
 
-            {% if current_user.is_authenticated %} 
-            {% for booking in bookings%} {%
-                    if current_user.id == spaces[booking.space_id - 1].host_id %}
+            {% if current_user.is_authenticated %}
+                {% for booking in bookings%} 
+                  {% if current_user.id == spaces[booking.space_id - 1].host_id %}
+
                     <div class="card">
                       <div class="card-image">
                         <figure class="image is-4by3">
@@ -88,7 +89,6 @@
                     {% endif %}
                     {% endfor %}
 
-                    
                     {% endif %}
 
 
@@ -102,8 +102,8 @@
         <h2 class="title is-4 has-text-centered has-text-warning">Bookings Requested</h2>
         <div class="box">
           {% if current_user.is_authenticated %} 
-          {% for booking in bookings %} 
-          {% if current_user.id == booking.guest_id %}
+              {% for booking in bookings %} 
+                {% if current_user.id == booking.guest_id %}
           <div class="card">
             <div class="card-image">
               <figure class="image is-4by3">
@@ -167,10 +167,11 @@
             </div>
           </div>
 
-          {% else %}
-            <p>no bookings</p>
+
           {% endif %}
           {% endfor %} 
+
+
 
           {% endif %}
         </div>
