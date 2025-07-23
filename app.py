@@ -141,7 +141,7 @@ def create_space():
     return redirect('/spaces')
  
 
-@app.route('spaces/<int:id>', methods = ["GET"])
+@app.route('/spaces/<int:id>', methods=["GET"])
 def get_space_with_id(id):
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)

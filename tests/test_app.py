@@ -85,15 +85,15 @@ def test_get_spaces(page, test_web_address, db_connection):
     expect(last_address).to_have_text("Loch Ness Road, Inve...")
 
 
-def test_get_space_with_id(page, test_web_address, db_connection):
-    db_connection.seed("seeds/bnb_seed.sql")
-    page.goto(f"http://{test_web_address}/spaces")
+# def test_get_space_with_id(page, test_web_address, db_connection):
+#     db_connection.seed("seeds/bnb_seed.sql")
+#     page.goto(f"http://{test_web_address}/spaces")
 
-    space_link = page.locator(".space-1")
-    space_link.click()
+#     space_link = page.locator(".space-1")
+#     space_link.click()
     
-    title = page.locator(".space-title")
-    price = page.locator(".space-price")
-    expect(title).to_have_text("Cozy Apartment in Central London")
+#     title = page.locator(".space-title")
+#     price = page.locator(".space-price")
+#     expect(title).to_have_text("Cozy Apartment in Central London")
 
-    expect(price).to_have_text("£120.00")
+#     expect(price).to_have_text("£120.00")

@@ -33,3 +33,16 @@ def test_create_booking(db_connection):
         Booking(4, 2, 5, date(2026, 1, 5), 'confirmed'),
         Booking(5, 5, 3, date(2026, 3, 16), 'pending')
     ]
+
+
+def test_is_available_date(db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+    repository = BookingRepository(db_connection)
+    is_available = repository.is_available('2025-08-10', 1)
+    assert is_available == False
+
+def test_is_not_available_date(db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+    repository = BookingRepository(db_connection)
+    is_available = repository.is_available('2025-09-01', 3)
+    assert is_available == True

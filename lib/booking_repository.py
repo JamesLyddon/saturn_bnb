@@ -22,3 +22,11 @@ class BookingRepository:
         self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
                                  [booking.guest_id, booking.space_id, booking.date, booking.status])
         return None
+    
+    def is_available(self, date, space_id):
+        rows = self._connection.execute("SELECT * FROM bookings WHERE date = %s AND status = 'confirmed' AND space_id = %s", [date, space_id])
+
+        if len(rows) == 0:
+            return True
+
+        return False
