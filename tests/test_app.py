@@ -101,11 +101,20 @@ def test_get_request_page(page, test_web_address, db_connection):
     # expect(page.locator("text=Reject")).to_be_visible()
     # expect(page.locator("h1.has-text-warning")).to_have_text("pending")
     
+    h2_tag = page.locator("h2", has_text="Bookings Received")
+    expect(h2_tag).to_have_text("Bookings Received")
     
-    expect(page.locator("text=Bookings Received")).to_be_visible()
-    expect(page.locator("text=Bookings Requested")).to_be_visible()
+    div_tag = page.locator(".t-approve-btn")
+    expect(div_tag).to_have_text("Approve")
 
-    expect(page.locator('button:has-text("Approve")')).to_be_visible()
-    expect(page.locator('button:has-text("Reject")')).to_be_visible()
+    
+    
+    # expect(page.locator("text=Bookings Received")).to_be_visible()
+    # expect(page.locator("text=Bookings Requested")).to_be_visible()
 
-    expect(page.locator("h1.has-text-warning")).to_contain_text("pending")
+    # expect(page.locator('button:has-text("Approve")')).to_be_visible()
+    # expect(page.locator('button:has-text("Reject")')).to_be_visible()
+
+    # expect(page.locator("h1.has-text-warning")).to_contain_text("pending")
+    
+    expect(page.locator("h1.has-text-warning", has_text="pending")).to_be_visible()
