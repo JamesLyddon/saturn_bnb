@@ -33,13 +33,13 @@ CREATE TABLE bookings (
 );
 
 
--- create users
+-- create users (hashed passwords are all 'SuperSecret999')
 INSERT INTO users (username, first_name, last_name, password, email, phone_number) VALUES
-('johndoe', 'John', 'Doe', 'hashedpassword123', 'john.doe@example.com', '01234567890'),
-('janesmith', 'Jane', 'Smith', 'anotherhash456', 'jane.smith@example.com',  '12345678901'),
-('petermiller', 'Peter', 'Miller', 'millerspass789', 'peter.miller@example.com', '23456789012'),
-('alicejones', 'Alice', 'Jones', 'joneshash101', 'alice.jones@example.com', '34567890123'),
-('emilywhite', 'Emily', 'White', 'whitepass202', 'emily.white@example.com', '45678901234' );
+('johndoe', 'John', 'Doe', '$2b$12$cPXIOM/8O1d/dTrBKWkIZutAmDsucwW7YgjfK9z6WVWBfZKr5YEkq', 'john.doe@example.com', '01234567890'),
+('janesmith', 'Jane', 'Smith', '$2b$12$cPXIOM/8O1d/dTrBKWkIZutAmDsucwW7YgjfK9z6WVWBfZKr5YEkq', 'jane.smith@example.com',  '12345678901'),
+('petermiller', 'Peter', 'Miller', '$2b$12$cPXIOM/8O1d/dTrBKWkIZutAmDsucwW7YgjfK9z6WVWBfZKr5YEkq', 'peter.miller@example.com', '23456789012'),
+('alicejones', 'Alice', 'Jones', '$2b$12$cPXIOM/8O1d/dTrBKWkIZutAmDsucwW7YgjfK9z6WVWBfZKr5YEkq', 'alice.jones@example.com', '34567890123'),
+('emilywhite', 'Emily', 'White', '$2b$12$cPXIOM/8O1d/dTrBKWkIZutAmDsucwW7YgjfK9z6WVWBfZKr5YEkq', 'emily.white@example.com', '45678901234' );
 
 
 -- create spaces
