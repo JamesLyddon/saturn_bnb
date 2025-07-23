@@ -12,7 +12,7 @@
             {% for booking in bookings%} {%
                     if current_user.id == spaces[booking.space_id - 1].host_id %}
                     <div class="card">
-                        <div class="card-image">
+                      <div class="card-image">
                         <figure class="image is-4by3">
                             <img
                             src="https://bulma.io/assets/images/placeholders/1280x960.png"
@@ -167,7 +167,12 @@
             </div>
           </div>
 
-          {% endif %} {% endfor %} {% endif %}
+          {% else %}
+            <p>no bookings</p>
+          {% endif %}
+          {% endfor %} 
+
+          {% endif %}
         </div>
       </div>
     </div>
