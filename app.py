@@ -12,6 +12,8 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
+from lib.booking import Booking
+from lib.booking_repository import BookingRepository
 
 # ==== Set up ====
 # Create a new Flask app
@@ -149,6 +151,25 @@ def get_space_with_id(id):
     space = repo.find(id)
 
     return render_template('/spaces/show.html', space = space)
+
+@app.route('/spaces/<int:id>', methods=["POST"])
+def handle_booking_request(id):
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+    date = request.form['date']
+    space_id = id
+
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+
+    is_available = booking_repo.is_available(date, space_id)
+
+    if is_available:
+        redirect('/requests')
+    else:
+        return render_template('/spaces/show.html', space = space, rejection_message = 'Dates not available')
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
