@@ -12,6 +12,7 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
+from lib.booking_repository import BookingRepository
 
 # ==== Set up ====
 # Create a new Flask app
@@ -140,6 +141,19 @@ def create_space():
 
     return redirect('/spaces')
  
+ 
+# temp to be deleted
+@app.route('/requests', methods=['GET'])
+@login_required
+def get_all_requests():
+    connection = get_flask_database_connection(app)
+    bookings_repo = BookingRepository(connection)
+    bookings = bookings_repo.all()
+    spaces_repo = SpaceRepository(connection)
+    spaces = spaces_repo.all()
+    users_repo = UserRepository(connection)
+    users = users_repo.all()
+    return render_template('requests.html', bookings=bookings, spaces=spaces, users=users)
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
