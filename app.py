@@ -139,7 +139,14 @@ def create_space():
     repo.create(space)
 
     return redirect('/spaces')
- 
+
+"""
+Routes for request page 
+"""
+@app.route('/requests', methods=["GET"])
+@login_required
+def get_request_page():
+    return render_template('requests.html')
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

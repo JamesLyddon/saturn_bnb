@@ -65,6 +65,14 @@ INSERT INTO spaces (host_id, title, description, price, address) VALUES
 INSERT INTO bookings (guest_id, space_id, date, status) VALUES
 (4, 1, '2025-08-10', 'confirmed');
 
+-- Alice Jones (user_id=4) books London Apartment (space_id=1)
+INSERT INTO bookings (guest_id, space_id, date, status) VALUES
+(4, 1, '2025-08-12', 'pending');
+
+-- Alice Jones (user_id=4) books London Apartment (space_id=1)
+INSERT INTO bookings (guest_id, space_id, date, status) VALUES
+(4, 1, '2025-08-17', 'rejected');
+
 -- Emily White (user_id=5) books Beachfront Villa (space_id=3)
 INSERT INTO bookings (guest_id, space_id, date, status) VALUES
 (5, 3, '2025-09-01', 'pending');
