@@ -8,7 +8,8 @@
         <h2 class="title is-4 has-text-centered has-text-info">Bookings Received</h2>
         <div class="box">
 
-            {% if current_user.is_authenticated %} {% for booking in bookings%} {%
+            {% if current_user.is_authenticated %} 
+            {% for booking in bookings%} {%
                     if current_user.id == spaces[booking.space_id - 1].host_id %}
                     <div class="card">
                         <div class="card-image">
@@ -50,11 +51,11 @@
                             <div class="media-content">
                             <h4 class="is-size-4 is-primary">guest contact</h4>
                             <h4 class="title is-size-4 is-primary">
-                                {{ users[booking.guest_id].email }}
+                                {{ users[booking.guest_id - 1].email }}
                             </h4>
                             </div>
                             <div class="media-right">
-                                {% if booking.status == 'confirmed' %}
+                                {% if booking.status == 'pending' %}
                                     <a
                                     href=""
                                     class="button is-success is-outlined mt-5"
@@ -83,8 +84,12 @@
                         </div>
                         </div>
                     </div>
+                    
+                    {% endif %}
+                    {% endfor %}
 
-                    {% endif %} {% endfor %} {% endif %}
+                    
+                    {% endif %}
 
 
 
@@ -96,8 +101,9 @@
       <div class="column">
         <h2 class="title is-4 has-text-centered has-text-warning">Bookings Requested</h2>
         <div class="box">
-          {% if current_user.is_authenticated %} {% for booking in bookings%} {%
-          if current_user.id == booking.guest_id %}
+          {% if current_user.is_authenticated %} 
+          {% for booking in bookings %} 
+          {% if current_user.id == booking.guest_id %}
           <div class="card">
             <div class="card-image">
               <figure class="image is-4by3">
