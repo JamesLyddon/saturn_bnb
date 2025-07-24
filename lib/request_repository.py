@@ -57,23 +57,3 @@ class RequestRepository:
             if request.booking_id == booking_id:
                 return request
         return None
-        
-        
-        
-        # rows = self._connection.execute('SELECT * FROM requests WHERE booking_id = %s', [booking_id])
-        # row = rows[0]
-        # return Request(
-        #         booking_id=row["booking_id"],
-        #         space_id=row["space_id"],
-        #         host_id=row["host_id"],
-        #         guest_id=row["guest_id"],
-        #         date=row["date"],
-        #         status=row["status"],
-        #         price=row["price"],
-        #         title=row["title"],
-        #         description=row["description"],
-        #         address=row["address"],
-        #         host_email=row["host_email"],
-        #         guest_email=row["guest_email"],
-        #         image_url=row["image_url"]
-        #     )
