@@ -41,11 +41,78 @@
         </div>
       </div>
     </nav>
-    <div class="container mt-6 mb-6">{% block content %}{% endblock %}</div>
+
+    <div class="flash-message-container">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-half is-two-thirds-tablet is-full-mobile">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="notification is-{{ category }} has-text-centered" data-autodismiss>
+                                    <button class="delete" type="button" aria-label="Dismiss notification"></button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <section class="section is-flex-grow-1">
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </section>
+
     <footer class="footer pt-6 pb-6">
       <div class="content has-text-centered">
         <p><strong>saturn bnb</strong> group 1 <strong>© 2025</strong></p>
       </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Function to dismiss a notification with fade-out
+            const dismissNotification = (notification) => {
+                if (notification) {
+                    // 1. Add the fading class
+                    notification.classList.add('is-fading');
+
+                    // 2. Wait for the CSS transition to complete, then remove
+                    // The duration (500ms in this example) should match your CSS transition duration
+                    notification.addEventListener('transitionend', () => {
+                        // Ensure it's still attached before trying to remove
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, { once: true }); // Use { once: true } to ensure listener runs only once
+                }
+            };
+
+            // 1. Manual dismiss for delete button
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+                $delete.addEventListener('click', () => {
+                    dismissNotification($notification);
+                });
+            });
+
+            // 2. Automatic dismiss for notifications with data-autodismiss attribute
+            (document.querySelectorAll('.notification[data-autodismiss]') || []).forEach(($notification) => {
+                const autoDismissTimeout = 2000; // Time before fade-out begins (e.g., 3 seconds)
+                
+                setTimeout(() => {
+                    dismissNotification($notification);
+                }, autoDismissTimeout);
+            });
+        });
+    </script>
+
   </body>
 </html>

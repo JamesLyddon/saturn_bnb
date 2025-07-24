@@ -30,3 +30,10 @@ class BookingRepository:
             return True
 
         return False
+
+    def update_status(self, booking_id, new_status):
+        self._connection.execute(
+            'UPDATE bookings SET status = %s WHERE id = %s',
+            [new_status, booking_id]
+        )
+        return None

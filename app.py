@@ -1,6 +1,6 @@
 import os
 # ==== packages ====
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, flash
 from lib.database_connection import get_flask_database_connection
 from wtforms.validators import ValidationError
 from flask_bcrypt import Bcrypt
@@ -17,7 +17,7 @@ from lib.booking import Booking
 from lib.booking_repository import BookingRepository
 
 from lib.request_repository import RequestRepository
-
+from lib.booking_repository import BookingRepository
 
 
 # ==== Set up ====
@@ -70,6 +70,7 @@ def login():
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
                     login_user(user)
+                    flash(f'Logged in, welcome back {current_user.first_name}', 'success')
                     return redirect(url_for('get_all_spaces'))
 
     return render_template('login.html', form=form)
@@ -78,6 +79,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash(f'You are now logged out', 'success')
     return redirect(url_for('get_all_spaces'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -93,7 +95,7 @@ def register():
         repo = UserRepository(connection)
         
         repo.create(new_user)
-        
+        flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
     
     return render_template('register.html', form=form)
@@ -132,6 +134,7 @@ def create_space():
         space = Space(None, host_id, title, description, price, address, image_url)
 
     repo.create(space)
+    flash(f'Your "{title}" space has been successfully listed!', 'success')
 
     return redirect('/spaces')
 
@@ -176,6 +179,41 @@ def handle_booking_request(id):
         return redirect('/requests')
     else:
         return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
+@app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
+@login_required
+def approve_reject_request(booking_id, action):
+    actions = ['confirmed', 'rejected']
+    if action not in actions:
+        flash('Invalid action', 'danger')
+        return redirect(url_for('get_all_requests'))
+    
+    connection = get_flask_database_connection(app)
+    
+    bookings_repo = BookingRepository(connection)
+    booking = bookings_repo.find(booking_id)
+    
+    # make sure the booking still exists
+    if not booking:
+        flash('Booking not found.', 'danger')
+        return redirect(url_for('get_all_requests'))
+    
+    space_repo = SpaceRepository(connection)
+    space = space_repo.find(booking.space_id)
+    
+    # make sure the current_user is the host/owner of the space
+    if not space or space.host_id != current_user.id:
+        flash('You are not authorized to reject this booking', 'danger')
+        return redirect(url_for('get_all_requests'))
+    
+    # change booking status based on action
+    bookings_repo.update_status(booking_id, action)
+    flash(f'Booking {action}', 'success' if action == 'confirmed' else 'danger')
+    
+    # Add logic here to send emails
+    #
+    #
+    
+    return redirect(url_for('get_all_requests'))
 
 
 # These lines start the server if you run this file directly
