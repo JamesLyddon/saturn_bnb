@@ -54,6 +54,31 @@ def client():
 
 
 """
+Tests for sign-in page
+"""
+def test_get_signin_page(page, test_web_address):
+    page.goto(f"http://{test_web_address}/login")
+    
+    h1_tag = page.locator(".t-headline")
+    expect(h1_tag).to_have_text("Login")
+    
+    label_tag = page.locator("label.label").nth(0)
+    expect(label_tag).to_have_text("Username")
+    
+    label_tag = page.locator("label.label").nth(1)
+    expect(label_tag).to_have_text("Password")
+    
+def test_user_signin_successfully(client):
+        response = client.post('/login', data={
+            'username': 'Saima1',
+            'password': 'saima123',
+        })
+        assert response.status_code == 200
+        assert f"Logged in, welcome back Saima1', 'success'"
+    
+
+
+"""
 We can render the spaces page with all spaces from the database
 """
 def test_get_spaces(page, test_web_address, db_connection):
