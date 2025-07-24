@@ -189,10 +189,69 @@ def handle_booking_request(id):
     if is_available:
        
         booking = Booking(None, current_user.id, space_id, date, 'pending')
-        booking_repo.create(booking)
+        booking_id = booking_repo.create(booking)
+        
+        # send new request receieved to host
+        requests_repo = RequestRepository(connection)
+        current_request = requests_repo.find_by_booking_id(booking_id)
+        user_repo = UserRepository(connection)
+        
+        html_body = render_template(
+            'emails/host_confirmation.html',
+            host_name=user_repo.find(current_request.host_id).first_name,
+            guest_name=user_repo.find(current_request.guest_id).first_name,
+            space_title=current_request.title,
+            booking_date=current_request.date,
+            space_address=current_request.address,
+            space_price=current_request.price,
+            host_email=current_request.host_email,
+            guest_email=current_request.guest_email,
+            space_id=current_request.space_id
+        )
+        
+        msg = Message(
+            subject='New Booking Request',
+            sender=current_app.config['MAIL_DEFAULT_SENDER'],
+            recipients=[current_request.host_email, 'jameslyddon@gmail.com']
+        )
+        
+        msg.html = html_body
+        mail.send(msg)
+        # send request receieved confirmation to guest
+        requests_repo = RequestRepository(connection)
+        current_request = requests_repo.find_by_booking_id(booking_id)
+        user_repo = UserRepository(connection)
+        
+        html_body = render_template(
+            'emails/guest_confirmation.html',
+            host_name=user_repo.find(current_request.host_id).first_name,
+            guest_name=user_repo.find(current_request.guest_id).first_name,
+            space_title=current_request.title,
+            booking_date=current_request.date,
+            space_address=current_request.address,
+            space_price=current_request.price,
+            host_email=current_request.host_email,
+            guest_email=current_request.guest_email,
+            space_id=current_request.space_id
+        )
+        
+        msg = Message(
+            subject='New Booking Request',
+            sender=current_app.config['MAIL_DEFAULT_SENDER'],
+            recipients=[current_request.host_email, 'jameslyddon@gmail.com']
+        )
+        
+        msg.html = html_body
+        mail.send(msg)
+        
+        
+        
+        
+        
         return redirect('/requests')
     else:
         return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
+
 @app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
 def approve_reject_request(booking_id, action):
@@ -255,7 +314,7 @@ def approve_reject_request(booking_id, action):
     msg = Message(
         subject='subject',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
-        recipients=['jameslyddon@gmail.com']
+        recipients=[current_request.guest_email, 'jameslyddon@gmail.com']
     )
     
     msg.html = html_body

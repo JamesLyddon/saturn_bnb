@@ -19,9 +19,10 @@ class BookingRepository:
         return Booking(row["id"], row["guest_id"], row["space_id"], row["date"], row["status"])
     
     def create(self, booking):
-        self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
-                                 [booking.guest_id, booking.space_id, booking.date, booking.status])
-        return None
+        rows = self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s) RETURNING id',
+            [booking.guest_id, booking.space_id, booking.date, booking.status])
+        new_id = rows[0]['id']
+        return new_id
     
     def is_available(self, date, space_id):
         rows = self._connection.execute("SELECT * FROM bookings WHERE date = %s AND status = 'confirmed' AND space_id = %s", [date, space_id])
