@@ -13,8 +13,8 @@
     <div class="columns">
         
       <div class="column" >
-        <div class="box" style="height: 550px;">
-          <div class="card" style="height: 500px; " >
+        <div class="box" style="height: 575px;">
+          <div class="card" style="height: 525px; " >
             <div class="image-description-1" style="height: 350px; overflow: hidden;">
              <figure class="image is-4x3">
               <img
@@ -24,9 +24,9 @@
               />
             </figure>
             </div>
-            <div class="text-description-1" style="padding: 20px;">
-            <h5 class="subtitle is-5">{{space.description}}</h5>
-            <h1 class="title is-3 is-primary">£{{space.price}} per night</h1>
+            <div class="text-description-1" style="padding: 20px 30px;">
+            <h6 class="subtitle is-6">{{space.description}}</h6>
+            <h1 class="title is-3 is-primary" style="padding-top: 30px ;">£{{space.price}} <span style="font-size: 0.75em; font-weight: 400; opacity: 0.8;">per night</span></h1>
             </div>
           </div>
         </div>
@@ -34,15 +34,22 @@
 
       <div class="column" >
         
-        <div class="box" style="height: 550px;">
-          <div class="card" style="height: 500px;  overflow: hidden;">
+        <div class="box" style="height: 575px;">
+          <div class="card py-2" style="height: 525px; overflow: hidden; display:flex; justify-content:center">
 
-             <h3 class="subtitle is-3">Select a date</h3>
-             <form method="post" action="/spaces/{{space.id}}">
-             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
-             <button type="submit" class="button is-white">Book Now</button>
-             </form>
-             <p>{{rejection_message}}</p>
+            <form method="post" action="/spaces/{{space.id}}">
+             <h3 class="subtitle is-3 has-text-centered" >Select a date</h3>
+             <div style="max-height: 400px; overflow-y: auto;">
+             <input type="date" 
+                class="input" 
+                data-display-mode="inline"
+                data-close-on-select="false" 
+                id="date" name="date" 
+                style="width: 100%; margin-bottom:auto;">
+             </div>
+             <button type="submit" class="button is-primary is-outlined t-create-space-btn is-fullwidth mt-2">Book Now</button>
+            </form>
+             <p id="rejection_message">{{rejection_message}}</p>
           </div>
         </div>
       </div>
@@ -81,6 +88,7 @@
             console.log(datepicker.data.value());
         });
     }
+
   </script>
 </section>
 
