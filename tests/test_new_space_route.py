@@ -8,7 +8,7 @@ def test_get_form(page, test_web_address, sign_in_user):
     page.goto(f'http://{test_web_address}/spaces/new')
     list_labels = page.locator('label')
 
-    expect(list_labels).to_have_text(["Title", "Description", "Price", "Address"])
+    expect(list_labels).to_have_text(["Title", "Description", "Price", "Address","image url"])
 
 def test_create_new_space(db_connection, page, test_web_address, sign_in_user):
     sign_in_user()
