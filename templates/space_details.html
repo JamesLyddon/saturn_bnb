@@ -1,0 +1,89 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Book Space{% endblock %}</h1>
+{% endblock %} {% block content %}
+
+<section class="section">
+  <div class="title-container" style="margin-bottom: 1.5rem">
+    <h1 class="title is-1">{{space.title}}</h1>
+    <h2 class="subtitle is-2">{{space.address}}</h2>
+  </div>
+
+ <div class="columns is-multiline is-variable is-2">
+    <div class="container">
+    <div class="columns">
+        
+      <div class="column" >
+        <div class="box" style="height: 550px;">
+          <div class="card" style="height: 500px; " >
+            <div class="image-description-1" style="height: 350px; overflow: hidden;">
+             <figure class="image is-4x3">
+              <img
+                src={{space.image_url}}
+                alt="Placeholder image"
+                style="width: 100%; height: auto; object-fit:contain; display: block;"
+              />
+            </figure>
+            </div>
+            <div class="text-description-1" style="padding: 20px;">
+            <h5 class="subtitle is-5">{{space.description}}</h5>
+            <h1 class="title is-3 is-primary">£{{space.price}} per night</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column" >
+        
+        <div class="box" style="height: 550px;">
+          <div class="card" style="height: 500px;  overflow: hidden;">
+
+             <h3 class="subtitle is-3">Select a date</h3>
+             <form method="post" action="/spaces/{{space.id}}">
+             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
+             <button type="submit" class="button is-white">Book Now</button>
+             </form>
+             <p>{{rejection_message}}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="{{url_for('static', filename='bulma-calendar.min.js')}}"></script>
+  <script>
+    const today = new Date().toISOString().split('T')[0]
+
+    const options = {
+                type:"date",
+                displayMode: 'inline',
+                closeOnSelect: false,
+                weekStart: 0,
+                color: 'primary',
+                minDate: today,  
+            
+    }
+    // Initialize all input of type date
+    var calendars = bulmaCalendar.attach('[type="date"]', options);
+
+    // Loop on each calendar initialized
+    for(var i = 0; i < calendars.length; i++) {
+        // Add listener to select event
+        calendars[i].on('select', date => {
+            console.log(date);
+        });
+    }
+
+    // To access to bulmaCalendar instance of an element
+    var element = document.querySelector('#my-element');
+    if (element) {
+        // bulmaCalendar instance is available as element.bulmaCalendar
+        element.bulmaCalendar.on('select', function(datepicker) {
+            console.log(datepicker.data.value());
+        });
+    }
+  </script>
+</section>
+
+
+
+{% endblock %}

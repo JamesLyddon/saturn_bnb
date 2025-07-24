@@ -12,8 +12,13 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
+
+from lib.booking import Booking
+from lib.booking_repository import BookingRepository
+
 from lib.request_repository import RequestRepository
 from lib.booking_repository import BookingRepository
+
 
 # ==== Set up ====
 # Create a new Flask app
@@ -138,8 +143,12 @@ def create_space():
     price = request.form['price']
     address = request.form['address']
     host_id = current_user.id
+    image_url = request.form['image_url']
 
-    space = Space(None, host_id, title, description, price, address)
+    if not image_url:
+        space = Space(None, host_id, title, description, price, address)
+    else:
+        space = Space(None, host_id, title, description, price, address, image_url)
 
     repo.create(space)
     flash(f'Your "{title}" space has been successfully listed!', 'success')
@@ -157,6 +166,36 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
+@app.route('/spaces/<int:id>', methods=["GET"])
+def get_space_with_id(id):
+    connection = get_flask_database_connection(app)
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    return render_template('space_details.html', space = space)
+
+@app.route('/spaces/<int:id>', methods=["POST"])
+def handle_booking_request(id):
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+    date = request.form['date']
+    print(date)
+    space_id = id
+
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    is_available = booking_repo.is_available(date, space_id)
+
+    if is_available:
+       
+        booking = Booking(None, current_user.id, space_id, date, 'pending')
+        booking_repo.create(booking)
+        return redirect('/requests')
+    else:
+        return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
 @app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
 def approve_reject_request(booking_id, action):

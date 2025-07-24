@@ -133,3 +133,18 @@ def test_post_reject_request(page, sign_in_user, test_web_address, db_connection
     assert result[0]["status"] == "rejected"
     
     
+
+
+
+# def test_get_space_with_id(page, test_web_address, db_connection):
+#     db_connection.seed("seeds/bnb_seed.sql")
+#     page.goto(f"http://{test_web_address}/spaces")
+
+#     space_link = page.locator(".space-1")
+#     space_link.click()
+    
+#     title = page.locator(".space-title")
+#     price = page.locator(".space-price")
+#     expect(title).to_have_text("Cozy Apartment in Central London")
+
+#     expect(price).to_have_text("£120.00")
