@@ -19,6 +19,7 @@ CREATE TABLE spaces (
     description TEXT,
     price NUMERIC(10, 2) NOT NULL,
     address VARCHAR(255) NOT NULL,
+    image_url VARCHAR(2048) DEFAULT 'https://bulma.io/assets/images/placeholders/1280x960.png',
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE 
 );
 
@@ -44,21 +45,21 @@ INSERT INTO users (username, first_name, last_name, password, email, phone_numbe
 
 -- create spaces
 -- johndoe
-INSERT INTO spaces (host_id, title, description, price, address) VALUES
-(1, 'Cozy Apartment in Central London', 'A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.', 120.00, '10 Downing St, London, England, United Kingdom'),
-(1, 'Spacious Family Home in Countryside', 'Beautiful detached house with a large garden, ideal for family holidays. Close to scenic walking trails.', 250.00, 'Rural Lane 5, Oxford, England, United Kingdom');
+INSERT INTO spaces (host_id, title, description, price, address, image_url) VALUES
+(1, 'Cozy Apartment in Central London', 'A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.', 120.00, '10 Downing St, London, England, United Kingdom', 'https://images.unsplash.com/photo-1632743441209-8a09b8a37e25?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(1, 'Spacious Family Home in Countryside', 'Beautiful detached house with a large garden, ideal for family holidays. Close to scenic walking trails.', 250.00, 'Rural Lane 5, Oxford, England, United Kingdom', 'https://images.unsplash.com/photo-1607675706981-67e3401b2281?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
 -- janesmith
-INSERT INTO spaces (host_id, title, description, price, address) VALUES
-(2, 'Beachfront Villa with Ocean Views', 'Luxury villa directly on the coast, stunning views and private beach access. Perfect for a relaxing getaway.', 350.50, 'Ocean Drive 123, Brighton, England, United Kingdom');
+INSERT INTO spaces (host_id, title, description, price, address, image_url) VALUES
+(2, 'Beachfront Villa with Ocean Views', 'Luxury villa directly on the coast, stunning views and private beach access. Perfect for a relaxing getaway.', 350.50, 'Ocean Drive 123, Brighton, England, United Kingdom', 'https://images.unsplash.com/photo-1543489822-c49534f3271f?q=80&w=3132&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
 -- petermiller
-INSERT INTO spaces (host_id, title, description, price, address) VALUES
-(3, 'Charming Edinburgh Loft', 'Stylish loft apartment in the historic Old Town of Edinburgh. Ideal for exploring the city on foot.', 150.00, 'Royal Mile 42, Edinburgh, Scotland, United Kingdom');
+INSERT INTO spaces (host_id, title, description, price, address, image_url) VALUES
+(3, 'Charming Edinburgh Loft', 'Stylish loft apartment in the historic Old Town of Edinburgh. Ideal for exploring the city on foot.', 150.00, 'Royal Mile 42, Edinburgh, Scotland, United Kingdom', 'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
 -- alicejones
-INSERT INTO spaces (host_id, title, description, price, address) VALUES
-(4, 'Rustic Cottage in Scottish Highlands', 'Escape to the tranquil beauty of the Highlands in this quaint stone cottage. Perfect for nature lovers.', 90.00,'Loch Ness Road, Inverness, Scotland, United Kingdom');
+INSERT INTO spaces (host_id, title, description, price, address, image_url) VALUES
+(4, 'Rustic Cottage in Scottish Highlands', 'Escape to the tranquil beauty of the Highlands in this quaint stone cottage. Perfect for nature lovers.', 90.00,'Loch Ness Road, Inverness, Scotland, United Kingdom', 'https://images.unsplash.com/photo-1733317817195-36b3a6473dd3?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
 -- create bookings
 -- Alice Jones (user_id=4) books London Apartment (space_id=1)

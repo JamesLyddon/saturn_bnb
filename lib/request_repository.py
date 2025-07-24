@@ -18,6 +18,7 @@ class RequestRepository:
                 s.title,
                 s.description,
                 s.address,
+                s.image_url,
                 host_user.email AS host_email,
                 guest_user.email AS guest_email
             FROM
@@ -44,7 +45,8 @@ class RequestRepository:
                 description=row["description"],
                 address=row["address"],
                 host_email=row["host_email"],
-                guest_email=row["guest_email"]
+                guest_email=row["guest_email"],
+                image_url=row["image_url"]
             )
             requests.append(item)
         return requests
