@@ -88,7 +88,7 @@ def register():
         repo = UserRepository(connection)
         
         repo.create(new_user)
-        
+        flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
     
     return render_template('register.html', form=form)
@@ -123,6 +123,7 @@ def create_space():
     space = Space(None, host_id, title, description, price, address)
 
     repo.create(space)
+    flash(f'Your "{title}" space has been successfully listed!', 'success')
 
     return redirect('/spaces')
 
