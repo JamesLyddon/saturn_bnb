@@ -48,14 +48,9 @@ body {
 
 /* Center calender */
 .datetimepicker {
-  /* Set a max-width if it's stretching too wide */
-  max-width: 320px; /* Adjust this value to match the calendar's natural width */
-
-  /* Ensure it's a block element and then center it */
+  max-width: 320px;
   display: block;
   margin-left: auto;
   margin-right: auto;
-
-  /* Optional: Add some margin below the calendar if needed */
   margin-bottom: 1rem;
 }
