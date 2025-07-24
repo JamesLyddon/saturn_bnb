@@ -100,22 +100,6 @@ def register():
 
     return render_template('register.html', form=form)
 
-# This is already handled by flask login above
-# @app.route('/register', methods=["GET"])
-# def get_register():
-#     return render_template('register.html')
-
-# @app.route('/register', methods=["POST"])
-# def post_register():
-#     username = request.form.get('username')
-#     first_name = request.form.get('first_name')
-#     last_name = request.form.get('last_name')
-#     password = request.form.get('password')
-#     email = request.form.get('email')
-#     phone_number = request.form.get('phone_number')
-
-#     return f"User succesfully registered!", 200
-
 # ==== Spaces Routes ====
 @app.route('/', methods=['GET'])
 @app.route('/spaces', methods=['GET'])
@@ -224,7 +208,19 @@ def approve_reject_request(booking_id, action):
     
     # change booking status based on action
     bookings_repo.update_status(booking_id, action)
-    flash(f'Booking {action}', 'success' if action == 'confirmed' else 'danger')
+    
+    flash_category = 'success' if action == 'confirmed' else 'danger'
+    
+    # search for similar pending requests and auto reject them
+    if action == 'confirmed':
+        bookings_repo.reject_similar_pending(
+            confirmed_space_id=booking.space_id,
+            confirmed_date=booking.date,
+            confirmed_booking_id=booking.id
+        )
+        flash(f'Booking {action}! Any similar requests rejected', flash_category)
+    else:
+        flash(f'Booking {action}!', flash_category)
     
     # Add logic here to send emails
     #
