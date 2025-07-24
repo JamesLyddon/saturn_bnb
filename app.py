@@ -157,7 +157,6 @@ def get_new_space():
     return render_template('spaces/new.html')
 
 @app.route('/spaces', methods=["POST"])
-# @login_required
 @login_required
 def create_space():
     connection = get_flask_database_connection(app)
@@ -193,6 +192,7 @@ def get_all_requests():
     return render_template('requests.html', requests=requests)
 
 @app.route('/spaces/<int:id>', methods=["GET"])
+@login_required
 def get_space_with_id(id):
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
@@ -202,6 +202,7 @@ def get_space_with_id(id):
     return render_template('space_details.html', space = space)
 
 @app.route('/spaces/<int:id>', methods=["POST"])
+@login_required
 def handle_booking_request(id):
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
