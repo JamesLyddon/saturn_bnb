@@ -29,3 +29,22 @@ class BookingRepository:
             [new_status, booking_id]
         )
         return None
+    
+    def reject_similar_pending(self, confirmed_space_id, confirmed_date, confirmed_booking_id):
+        """
+        Rejects all other pending bookings for a given space_id and date,
+        excluding the booking that was just confirmed
+        """
+        self._connection.execute(
+            """
+            UPDATE bookings
+            SET status = 'rejected'
+            WHERE
+                space_id = %s AND
+                date = %s AND
+                status = 'pending' AND
+                id != %s;
+            """,
+            [confirmed_space_id, confirmed_date, confirmed_booking_id]
+        )
+        return None

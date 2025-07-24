@@ -167,11 +167,32 @@ def approve_reject_request(booking_id, action):
     
     # change booking status based on action
     bookings_repo.update_status(booking_id, action)
-    flash(f'Booking {action}', 'success' if action == 'confirmed' else 'danger')
+    
+    flash_category = 'success' if action == 'confirmed' else 'danger'
+    
+    # search for similar pending requests and auto reject them
+    if action == 'confirmed':
+        bookings_repo.reject_similar_pending(
+            confirmed_space_id=booking.space_id,
+            confirmed_date=booking.date,
+            confirmed_booking_id=booking.id
+        )
+        flash(f'Booking {action}! Any similar requests rejected', flash_category)
+    else:
+        flash(f'Booking {action}!', flash_category)
+        
+        
+        # all_bookings = bookings_repo.all()
+        # for item in all_bookings:
+        #     if item.id == booking.id:
+        #         continue
+        #     if item.space_id == booking.space_id and item.date == booking.date and item.status == 'pending':
+                # bookings_repo.update_status(item.id, 'rejected')
     
     # Add logic here to send emails
     #
     #
+    
     
     return redirect(url_for('get_all_requests'))
 
