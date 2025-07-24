@@ -12,7 +12,8 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
-from lib.booking_repository import BookingRepository
+from lib.request_repository import RequestRepository
+
 
 # ==== Set up ====
 # Create a new Flask app
@@ -41,11 +42,11 @@ def validate_username(username):
     repo = UserRepository(connection)
     users = repo.all()
     username_exists = False
-    
+
     for user in users:
         if user.username == username:
             username_exists = True
-    
+
     if username_exists:
         raise ValidationError(
             'That username already exists. Please choose a different one.')
@@ -54,12 +55,12 @@ def validate_username(username):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
+
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
         users = repo.all()
-    
+
         for user in users:
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
@@ -77,19 +78,19 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    
+
     if form.validate_on_submit():
         hashed_password = bycrpt.generate_password_hash(form.password.data)
         hashed_password_string = hashed_password.decode('utf-8')
         new_user = User(None, username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, password=hashed_password_string, email=form.email.data, phone_number=form.phone_number.data)
-    
+
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
-        
+
         repo.create(new_user)
-        
+
         return redirect(url_for('login'))
-    
+
     return render_template('register.html', form=form)
 
 # This is already handled by flask login above
@@ -124,6 +125,7 @@ def get_new_space():
 
 @app.route('/spaces', methods=["POST"])
 # @login_required
+@login_required
 def create_space():
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
@@ -142,23 +144,18 @@ def create_space():
     return redirect('/spaces')
 
 
-# temp to be deleted
+# ==== Requests Routes ====
 @app.route('/requests', methods=['GET'])
 @login_required
 def get_all_requests():
     connection = get_flask_database_connection(app)
-    bookings_repo = BookingRepository(connection)
-    bookings = bookings_repo.all()
-    spaces_repo = SpaceRepository(connection)
-    spaces = spaces_repo.all()
-    users_repo = UserRepository(connection)
-    users = users_repo.all()
-    return render_template('requests.html', bookings=bookings, spaces=spaces, users=users)
-
+    requests_repo = RequestRepository(connection)
+    requests = requests_repo.all()
+    
+    return render_template('requests.html', requests=requests)
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-
