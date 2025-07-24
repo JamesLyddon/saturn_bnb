@@ -65,6 +65,7 @@ def login():
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
                     login_user(user)
+                    flash(f'Logged in, welcome back {current_user.first_name}', 'success')
                     return redirect(url_for('get_all_spaces'))
 
     return render_template('login.html', form=form)
@@ -73,6 +74,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash(f'You are now logged out', 'success')
     return redirect(url_for('get_all_spaces'))
 
 @app.route('/register', methods=['GET', 'POST'])
