@@ -13,6 +13,13 @@ from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
 
+from lib.booking import Booking
+from lib.booking_repository import BookingRepository
+
+from lib.request_repository import RequestRepository
+
+
+
 # ==== Set up ====
 # Create a new Flask app
 app = Flask(__name__)
@@ -91,22 +98,6 @@ def register():
     
     return render_template('register.html', form=form)
 
-# This is already handled by flask login above
-# @app.route('/register', methods=["GET"])
-# def get_register():
-#     return render_template('register.html')
-
-# @app.route('/register', methods=["POST"])
-# def post_register():
-#     username = request.form.get('username')
-#     first_name = request.form.get('first_name')
-#     last_name = request.form.get('last_name')
-#     password = request.form.get('password')
-#     email = request.form.get('email')
-#     phone_number = request.form.get('phone_number')
-
-#     return f"User succesfully registered!", 200
-
 # ==== Spaces Routes ====
 @app.route('/', methods=['GET'])
 @app.route('/spaces', methods=['GET'])
@@ -122,7 +113,7 @@ def get_new_space():
     return render_template('spaces/new.html')
 
 @app.route('/spaces', methods=["POST"])
-# @login_required
+@login_required
 def create_space():
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
@@ -132,17 +123,60 @@ def create_space():
     description = request.form['description']
     price = request.form['price']
     address = request.form['address']
-    host_id = 1
+    host_id = current_user.id
+    image_url = request.form['image_url']
 
-    space = Space(None, host_id, title, description, price, address)
+    if not image_url:
+        space = Space(None, host_id, title, description, price, address)
+    else:
+        space = Space(None, host_id, title, description, price, address, image_url)
 
     repo.create(space)
 
     return redirect('/spaces')
- 
-@app.route("/preview")
-def preview():
-    return render_template("space_details.html")
+
+
+# ==== Requests Routes ====
+@app.route('/requests', methods=['GET'])
+@login_required
+def get_all_requests():
+    connection = get_flask_database_connection(app)
+    requests_repo = RequestRepository(connection)
+    requests = requests_repo.all()
+    
+    return render_template('requests.html', requests=requests)
+
+@app.route('/spaces/<int:id>', methods=["GET"])
+def get_space_with_id(id):
+    connection = get_flask_database_connection(app)
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    return render_template('space_details.html', space = space)
+
+@app.route('/spaces/<int:id>', methods=["POST"])
+def handle_booking_request(id):
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+    date = request.form['date']
+    print(date)
+    space_id = id
+
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    is_available = booking_repo.is_available(date, space_id)
+
+    if is_available:
+       
+        booking = Booking(None, current_user.id, space_id, date, 'pending')
+        booking_repo.create(booking)
+        return redirect('/requests')
+    else:
+        return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

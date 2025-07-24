@@ -1,14 +1,14 @@
 
 
 class Space:
-    def __init__(self, id, host_id, title, description, price, address):
+    def __init__(self, id, host_id, title, description, price, address, image_url='https://bulma.io/assets/images/placeholders/1280x960.png'):
         self.id = id
         self.title = title
         self.description = description
         self.price = price
         self.address = address
         self.host_id = host_id
-    
+        self.image_url = image_url
 
     def __eq__(self, value):
         return self.__dict__ == value.__dict__

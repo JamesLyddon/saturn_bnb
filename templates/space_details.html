@@ -4,8 +4,8 @@
 
 <section class="section">
   <div class="title-container" style="margin-bottom: 1.5rem">
-    <h1 class="title is-1">Cozy Apartment in Central London</h1>
-    <h2 class="subtitle is-2">10 Downing Street, London, SW1A 2AB</h2>
+    <h1 class="title is-1">{{space.title}}</h1>
+    <h2 class="subtitle is-2">{{space.address}}</h2>
   </div>
 
  <div class="columns is-multiline is-variable is-2">
@@ -18,15 +18,15 @@
             <div class="image-description-1" style="height: 350px; overflow: hidden;">
              <figure class="image is-4x3">
               <img
-                src="{{ url_for('static', filename='photo2.avif')}}"
+                src={{space.image_url}}
                 alt="Placeholder image"
                 style="width: 100%; height: auto; object-fit:contain; display: block;"
               />
             </figure>
             </div>
             <div class="text-description-1" style="padding: 20px;">
-            <h5 class="subtitle is-5">A charming one-bedroom apartment right in the heart of London, perfect for a couple or solo traveler.</h5>
-            <h1 class="title is-3 is-primary">£120.00 per night</h1>
+            <h5 class="subtitle is-5">{{space.description}}</h5>
+            <h1 class="title is-3 is-primary">£{{space.price}} per night</h1>
             </div>
           </div>
         </div>
@@ -36,11 +36,13 @@
         
         <div class="box" style="height: 550px;">
           <div class="card" style="height: 500px;  overflow: hidden;">
-             
-             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" >
+
              <h3 class="subtitle is-3">Select a date</h3>
-             <button class="button is-white">Book Now</button>
-             
+             <form method="post" action="/spaces/{{space.id}}">
+             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
+             <button type="submit" class="button is-white">Book Now</button>
+             </form>
+             <p>{{rejection_message}}</p>
           </div>
         </div>
       </div>
