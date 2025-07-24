@@ -3,6 +3,7 @@ from pathlib import Path
 from xprocess import ProcessStarter
 from lib.database_connection import DatabaseConnection
 from app import app
+from playwright.sync_api import Page, expect
 
 # This is a Pytest fixture.
 # It creates an object that we can use in our tests.
@@ -49,3 +50,14 @@ def web_client():
     app.config['TESTING'] = True # This gets us better errors
     with app.test_client() as client:
         yield client
+
+@pytest.fixture
+def sign_in_user(db_connection, test_web_address, page):
+    def _login():
+        db_connection.seed('seeds/bnb_seed.sql')
+        page.goto(f'http://{test_web_address}/login')
+        page.fill('input[name=username]', 'janesmith')
+        page.fill('input[name=password]', 'SuperSecret999')
+        page.click('button[type=submit]')
+        expect(page.locator('.t-headline')).to_have_text('Available Spaces')
+    return _login
