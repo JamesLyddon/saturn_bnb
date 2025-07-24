@@ -154,6 +154,16 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
+# @app.route('/requests/<int:booking_id>/approve', methods=['POST'])
+# @login_required
+# def post_approve_requests(booking_id):
+#     connection = get_flask_database_connection(app)
+#     requests_repo = RequestRepository(connection)
+#     requests_repo.approve_booking(booking_id)
+#     return "Request Approve", 200 
+    
+
+
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
 # if started in test mode.

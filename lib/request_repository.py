@@ -50,3 +50,8 @@ class RequestRepository:
             )
             requests.append(item)
         return requests
+    
+
+    # def approve_booking(self, booking_id):
+    #     query = "UPDATE bookings SET status = 'Approve' WHERE id = %s"
+    #     self._connection.execute(query, [booking_id])
