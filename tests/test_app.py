@@ -109,54 +109,27 @@ def test_get_request_page(page, test_web_address, db_connection):
     expect(div_tag).to_be_visible()
 
 
-
-def test_post_approve_request(page, web_client, test_web_address, db_connection):
+def test_post_approve_request(page, sign_in_user, test_web_address, db_connection):
     db_connection.seed("seeds/bnb_seed.sql")
-    
-    # response = web_client.post("/login", data={
-    #     "username": "janesmith",
-    #     "password": "SuperSecret999"
-    # }, follow_redirects=True)
-    # assert response.status_code == 200
-    
-    page.goto(f"http://{test_web_address}/login")
-    page.fill('input[name="username"]', 'janesmith')
-    page.fill('input[name="password"]', 'SuperSecret999')
-    page.click('button[type="submit"]')
+
+    sign_in_user()
+
     page.goto(f"http://{test_web_address}/requests")
-    
+    page.click('form[action="/requests/2/confirmed"] button')
+
     result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
-    assert result[0]["status"] == "pending"
-    response = web_client.post('/requests/2/approve', data={'text': 'Approve'})
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Request Approve'
+    assert result[0]["status"] == "confirmed"
+    
+    
+def test_post_reject_request(page, sign_in_user, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+
+    sign_in_user()
+
+    page.goto(f"http://{test_web_address}/requests")
+    page.click('form[action="/requests/2/rejected"] button')
+
     result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
-    assert result[0]["status"] == "Approve"
-    
-    # page.goto(f"http://{test_web_address}/login")
-    # page.fill('input[name="username"]', 'janesmith')
-    # page.fill('input[name="password"]', 'SuperSecret999')
-    # page.click('button[type="submit"]')
-    # page.goto(f"http://{test_web_address}/requests")
-    
-    # response = web_client.post('/requests/2/approve', data={'text': 'Approve'})
-    # assert response.status_code == 200
-    # assert response.data.decode('utf-8') == 'Request Approve'
-    # result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
-    # assert result[0]["status"] == "Approve"
+    assert result[0]["status"] == "rejected"
     
     
-    
-# def test_post_reject_request(page, web_client, test_web_address, db_connection):
-#     db_connection.seed("seeds/bnb_seed.sql")
-#     page.goto(f"http://{test_web_address}/login")
-#     page.fill('input[name="username"]', 'janesmith')
-#     page.fill('input[name="password"]', 'SuperSecret999')
-#     page.click('button[type="submit"]')
-#     page.goto(f"http://{test_web_address}/requests")
-    
-#     response = web_client.post('/requests/2/reject', data={'text': 'Reject'})
-#     assert response.status_code == 200
-#     assert response.data.decode('utf-8') == 'Request Reject'
-#     result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
-#     assert result[0]["status"] == "Reject"
