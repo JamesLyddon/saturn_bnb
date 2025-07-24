@@ -22,6 +22,14 @@ class BookingRepository:
         self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
                                  [booking.guest_id, booking.space_id, booking.date, booking.status])
         return None
+    
+    def is_available(self, date, space_id):
+        rows = self._connection.execute("SELECT * FROM bookings WHERE date = %s AND status = 'confirmed' AND space_id = %s", [date, space_id])
+
+        if len(rows) == 0:
+            return True
+
+        return False
 
     def update_status(self, booking_id, new_status):
         self._connection.execute(
@@ -29,7 +37,7 @@ class BookingRepository:
             [new_status, booking_id]
         )
         return None
-    
+
     def reject_similar_pending(self, confirmed_space_id, confirmed_date, confirmed_booking_id):
         """
         Rejects all other pending bookings for a given space_id and date,

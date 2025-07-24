@@ -12,8 +12,13 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
+
+from lib.booking import Booking
+from lib.booking_repository import BookingRepository
+
 from lib.request_repository import RequestRepository
 from lib.booking_repository import BookingRepository
+
 
 # ==== Set up ====
 # Create a new Flask app
@@ -42,11 +47,11 @@ def validate_username(username):
     repo = UserRepository(connection)
     users = repo.all()
     username_exists = False
-    
+
     for user in users:
         if user.username == username:
             username_exists = True
-    
+
     if username_exists:
         raise ValidationError(
             'That username already exists. Please choose a different one.')
@@ -55,12 +60,12 @@ def validate_username(username):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
+
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
         users = repo.all()
-    
+
         for user in users:
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
@@ -80,19 +85,19 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    
+
     if form.validate_on_submit():
         hashed_password = bycrpt.generate_password_hash(form.password.data)
         hashed_password_string = hashed_password.decode('utf-8')
         new_user = User(None, username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, password=hashed_password_string, email=form.email.data, phone_number=form.phone_number.data)
-    
+
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
-        
+
         repo.create(new_user)
         flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('register.html', form=form)
 
 # ==== Spaces Routes ====
@@ -110,6 +115,7 @@ def get_new_space():
     return render_template('spaces/new.html')
 
 @app.route('/spaces', methods=["POST"])
+# @login_required
 @login_required
 def create_space():
     connection = get_flask_database_connection(app)
@@ -121,13 +127,18 @@ def create_space():
     price = request.form['price']
     address = request.form['address']
     host_id = current_user.id
+    image_url = request.form['image_url']
 
-    space = Space(None, host_id, title, description, price, address)
+    if not image_url:
+        space = Space(None, host_id, title, description, price, address)
+    else:
+        space = Space(None, host_id, title, description, price, address, image_url)
 
     repo.create(space)
     flash(f'Your "{title}" space has been successfully listed!', 'success')
 
     return redirect('/spaces')
+
 
 # ==== Requests Routes ====
 @app.route('/requests', methods=['GET'])
@@ -139,6 +150,36 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
+@app.route('/spaces/<int:id>', methods=["GET"])
+def get_space_with_id(id):
+    connection = get_flask_database_connection(app)
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    return render_template('space_details.html', space = space)
+
+@app.route('/spaces/<int:id>', methods=["POST"])
+def handle_booking_request(id):
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+    date = request.form['date']
+    print(date)
+    space_id = id
+
+    repo = SpaceRepository(connection)
+
+    space = repo.find(id)
+    
+    is_available = booking_repo.is_available(date, space_id)
+
+    if is_available:
+       
+        booking = Booking(None, current_user.id, space_id, date, 'pending')
+        booking_repo.create(booking)
+        return redirect('/requests')
+    else:
+        return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
 @app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
 def approve_reject_request(booking_id, action):
@@ -180,19 +221,10 @@ def approve_reject_request(booking_id, action):
         flash(f'Booking {action}! Any similar requests rejected', flash_category)
     else:
         flash(f'Booking {action}!', flash_category)
-        
-        
-        # all_bookings = bookings_repo.all()
-        # for item in all_bookings:
-        #     if item.id == booking.id:
-        #         continue
-        #     if item.space_id == booking.space_id and item.date == booking.date and item.status == 'pending':
-                # bookings_repo.update_status(item.id, 'rejected')
     
     # Add logic here to send emails
     #
     #
-    
     
     return redirect(url_for('get_all_requests'))
 
@@ -202,4 +234,3 @@ def approve_reject_request(booking_id, action):
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-
