@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from lib.forms.register_form import RegisterForm
 from lib.forms.login_form import LoginForm
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
+from dotenv import load_dotenv
 # ==== Models & Repos ====
 from lib.space_repository import SpaceRepository
 from lib.space import Space
@@ -22,15 +23,29 @@ from lib.booking_repository import BookingRepository
 
 
 # ==== Set up ====
+# load environment variables
+load_dotenv()
+
 # Create a new Flask app
 app = Flask(__name__)
 
 # Password hashing using bycrpt
 bycrpt = Bcrypt(app)
 
-# Example for development (can go through setting up a .env file together later)
-app.config['SECRET_KEY'] = 'supersecretkey'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
+# Mail Setup
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+
+# initialise flask_mail
+mail = Mail(app)
+
+# initialise login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -56,18 +71,6 @@ def validate_username(username):
     if username_exists:
         raise ValidationError(
             'That username already exists. Please choose a different one.')
-
-# ==== Mail setup ====
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'saturnbnb78@gmail.com'
-app.config['MAIL_PASSWORD'] = 'ifrsrxzsbwcfeuch'
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_DEFAULT_SENDER'] = 'saturnbnb78@gmail.com'
-
-# initialise flask_mail
-mail = Mail(app)
 
 # ==== Register, Login, Logout Routes ====
 @app.route('/login', methods=['GET', 'POST'])
