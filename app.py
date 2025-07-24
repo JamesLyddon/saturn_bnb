@@ -20,9 +20,6 @@ from lib.booking_repository import BookingRepository
 # Create a new Flask app
 app = Flask(__name__)
 
-# initialise flask_mail
-mail = Mail(app)
-
 # Password hashing using bycrpt
 bycrpt = Bcrypt(app)
 
@@ -60,9 +57,12 @@ def validate_username(username):
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'saturnbnb78@gmail.com'
-app.config['MAIL_PASSWORD'] = 'SuperSecret999'
-app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_PASSWORD'] = 'ifrsrxzsbwcfeuch'
 app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEFAULT_SENDER'] = 'saturnbnb78@gmail.com'
+
+# initialise flask_mail
+mail = Mail(app)
 
 # ==== Register, Login, Logout Routes ====
 @app.route('/login', methods=['GET', 'POST'])
@@ -193,19 +193,12 @@ def approve_reject_request(booking_id, action):
         flash(f'Booking {action}! Any similar requests rejected', flash_category)
     else:
         flash(f'Booking {action}!', flash_category)
-        
-        
-        # all_bookings = bookings_repo.all()
-        # for item in all_bookings:
-        #     if item.id == booking.id:
-        #         continue
-        #     if item.space_id == booking.space_id and item.date == booking.date and item.status == 'pending':
-                # bookings_repo.update_status(item.id, 'rejected')
+    
     
     # Add logic here to send emails
-    #
-    #
-    
+    msg = Message('Hello', sender='saturnbnb78@gmail.com', recipients=['jameslyddon@gmail.com'])
+    msg.body = 'Hello from SaturnBNB'
+    mail.send(msg)
     
     return redirect(url_for('get_all_requests'))
 
