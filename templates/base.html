@@ -48,7 +48,7 @@
                   <div class="columns is-centered"> {# Centers the single column horizontally #}
                       <div class="column is-half is-two-thirds-tablet is-full-mobile"> {# Example widths #}
                           {% for category, message in messages %}
-                              <div class="notification is-{{ category }} has-text-centered">
+                              <div class="notification is-{{ category }} has-text-centered" data-autodismiss>
                                   <button class="delete" type="button" aria-label="Dismiss notification"></button>
                                   {{ message }}
                               </div>
@@ -71,17 +71,41 @@
       </div>
     </footer>
 
-
     <script>
-        // JavaScript to make the delete button work for notifications
         document.addEventListener('DOMContentLoaded', () => {
-          (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-            const $notification = $delete.parentNode;
+            // Function to dismiss a notification with fade-out
+            const dismissNotification = (notification) => {
+                if (notification) {
+                    // 1. Add the fading class
+                    notification.classList.add('is-fading');
 
-            $delete.addEventListener('click', () => {
-              $notification.parentNode.removeChild($notification);
+                    // 2. Wait for the CSS transition to complete, then remove
+                    // The duration (500ms in this example) should match your CSS transition duration
+                    notification.addEventListener('transitionend', () => {
+                        // Ensure it's still attached before trying to remove
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, { once: true }); // Use { once: true } to ensure listener runs only once
+                }
+            };
+
+            // 1. Manual dismiss for delete button
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+                $delete.addEventListener('click', () => {
+                    dismissNotification($notification);
+                });
             });
-          });
+
+            // 2. Automatic dismiss for notifications with data-autodismiss attribute
+            (document.querySelectorAll('.notification[data-autodismiss]') || []).forEach(($notification) => {
+                const autoDismissTimeout = 2000; // Time before fade-out begins (e.g., 3 seconds)
+                
+                setTimeout(() => {
+                    dismissNotification($notification);
+                }, autoDismissTimeout);
+            });
         });
     </script>
 
