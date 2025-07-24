@@ -1,6 +1,6 @@
 import os
 # ==== packages ====
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, flash
 from lib.database_connection import get_flask_database_connection
 from wtforms.validators import ValidationError
 from flask_bcrypt import Bcrypt
@@ -13,7 +13,7 @@ from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
 from lib.request_repository import RequestRepository
-
+from lib.booking_repository import BookingRepository
 
 # ==== Set up ====
 # Create a new Flask app
@@ -154,14 +154,57 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
-# @app.route('/requests/<int:booking_id>/approve', methods=['POST'])
-# @login_required
-# def post_approve_requests(booking_id):
-#     connection = get_flask_database_connection(app)
-#     requests_repo = RequestRepository(connection)
-#     requests_repo.approve_booking(booking_id)
-#     return "Request Approve", 200 
+@app.route('/requests/<int:booking_id>', methods=['POST'])
+@login_required
+def approve_request(booking_id):
+    connection = get_flask_database_connection(app)
+    bookings_repo = BookingRepository(connection)
+    booking = bookings_repo.find(booking_id)
+    space_repo = SpaceRepository(connection)
+    space = space_repo.find(booking.space_id)
+    # make sure the booking still exists
+    if not booking:
+        flash('Booking not found.', 'danger')
+        return redirect(url_for('get_all_requests'))
+    # make sure the current_user is the host/owner of the space
+    if not space or space.host_id != current_user.id:
+        flash('You are not authorized to reject this booking', 'danger')
+        return redirect(url_for('get_all_requests'))
+    # change booking status
+    bookings_repo.update_status(booking_id, 'confirmed')
     
+    # Add logic here to send emails
+    #
+    #
+    
+    flash('Booking approved!', 'success')
+    return redirect(url_for('get_all_requests'))
+
+@app.route('/requests/<int:booking_id>', methods=['POST'])
+@login_required
+def reject_request(booking_id):
+    connection = get_flask_database_connection(app)
+    bookings_repo = BookingRepository(connection)
+    booking = bookings_repo.find(booking_id)
+    space_repo = SpaceRepository(connection)
+    space = space_repo.find(booking.space_id)
+    # make sure the booking still exists
+    if not booking:
+        flash('Booking not found.', 'danger')
+        return redirect(url_for('get_all_requests'))
+    # make sure the current_user is the host/owner of the space
+    if not space or space.host_id != current_user.id:
+        flash('You are not authorized to reject this booking', 'danger')
+        return redirect(url_for('get_all_requests'))
+    # change booking status
+    bookings_repo.update_status(booking_id, 'rejected')
+    
+    # Add logic here to send emails
+    #
+    #
+    
+    flash('Booking rejected!', 'rejected')
+    return redirect(url_for('get_all_requests'))
 
 
 # These lines start the server if you run this file directly
