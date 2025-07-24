@@ -51,13 +51,16 @@ def web_client():
     with app.test_client() as client:
         yield client
 
+
+
 @pytest.fixture
 def sign_in_user(db_connection, test_web_address, page):
+    # we wrap a _login function here, as otherwise the fixture would run as soon as the test starts
     def _login():
         db_connection.seed('seeds/bnb_seed.sql')
         page.goto(f'http://{test_web_address}/login')
         page.fill('input[name=username]', 'janesmith')
         page.fill('input[name=password]', 'SuperSecret999')
         page.click('button[type=submit]')
-        expect(page.locator('.t-headline')).to_have_text('Available Spaces')
+        
     return _login

@@ -14,6 +14,7 @@ def sign_in_user(db_connection, test_web_address, page):
     
 def test_get_form(page, test_web_address, sign_in_user, db_connection):
     sign_in_user()
+    expect(page.locator('.t-headline')).to_have_text('Available Spaces')
     # page.goto(f'http://{test_web_address}/spaces/new')
     # list_labels = page.locator('label')
 
