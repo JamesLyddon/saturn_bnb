@@ -124,8 +124,12 @@ def create_space():
     price = request.form['price']
     address = request.form['address']
     host_id = current_user.id
+    image_url = request.form['image_url']
 
-    space = Space(None, host_id, title, description, price, address)
+    if not image_url:
+        space = Space(None, host_id, title, description, price, address)
+    else:
+        space = Space(None, host_id, title, description, price, address, image_url)
 
     repo.create(space)
 
@@ -147,7 +151,7 @@ def get_space_with_id(id):
     repo = SpaceRepository(connection)
 
     space = repo.find(id)
-
+    
     return render_template('/spaces/show.html', space = space)
 
 @app.route('/spaces/<int:id>', methods=["POST"])
@@ -160,10 +164,13 @@ def handle_booking_request(id):
     repo = SpaceRepository(connection)
 
     space = repo.find(id)
-
+    
     is_available = booking_repo.is_available(date, space_id)
 
     if is_available:
+       
+        booking = Booking(None, current_user.id, space_id, date, 'pending')
+        booking_repo.create(booking)
         redirect('/requests')
     else:
         return render_template('/spaces/show.html', space = space, rejection_message = 'Dates not available')
