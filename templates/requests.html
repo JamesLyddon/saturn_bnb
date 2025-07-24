@@ -54,7 +54,7 @@
                                 {{ users[booking.guest_id - 1].email }}
                             </h4>
                             </div>
-                            <div class="media-right">
+                            <div class="t-pending-btn media-right">
                                 {% if booking.status == 'pending' %}
                                     <a
                                     href=""
@@ -63,7 +63,7 @@
                                     >
                                     <a
                                     href=""
-                                    class="button is-danger is-outlined mt-5 ml-2"
+                                    class="t-reject-btn button is-danger is-outlined mt-5 ml-2"
                                     >Reject</a
                                     >
                                 {% else%}
