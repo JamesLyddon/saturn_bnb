@@ -1,83 +1,50 @@
-{% extends 'base.html' %} {% block header %}
-<h1>{% block title %}Register{% endblock %}</h1>
-{% endblock %} {% block content %}
-
-<div class="container is-max-tablet">
-  <h1 class="title is-2 t-headline" style="color: #04d1b2">Register</h1>
-
-  <form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <div class="field">
-      <label class="label">{{ form.username.label }}</label>
-      <div class="control">{{ form.username(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <label class="label">{{ form.first_name.label }}</label>
-      <div class="control">{{ form.first_name(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <label class="label">{{ form.last_name.label }}</label>
-      <div class="control">{{ form.last_name(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <label class="label">{{ form.password.label }}</label>
-      <div class="control">{{ form.password(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <label class="label">{{ form.email.label }}</label>
-      <div class="control">{{ form.email(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <label class="label">{{ form.phone_number.label }}</label>
-      <div class="control">{{ form.phone_number(class="input") }}</div>
-    </div>
-
-    <div class="field">
-      <div class="control">
-        <button type="submit" class="button is-primary is-outlined">
-          {{ form.submit.label }}
-        </button>
-      </div>
-    </div>
-  </form>
-</div>
+{% extends 'base.html' %}
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
+{% block content %}
+  <div class="container is-max-tablet">
+    <h1 class="title is-2 t-headline" style="color: #04d1b2">Register</h1>
 
-<!-- COMMENTED OUT FOR NOW TO AVOID MERGE CONFLICT -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Register a new user</h2>
-    <form action="register" method="POST">
-        <label for="username">User name:</label>
-        <input type="text" id="username" required> <br> <br>
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <div class="field">
+        <label class="label">{{ form.username.label }}</label>
+        <div class="control">{{ form.username(class="input") }}</div>
+      </div>
 
-        <label for="first_name">First name:</label>
-        <input type="text" id="first_name" required> <br> <br>
+      <div class="field">
+        <label class="label">{{ form.first_name.label }}</label>
+        <div class="control">{{ form.first_name(class="input") }}</div>
+      </div>
 
-        <label for="last_name">Last name:</label>
-        <input type="text" id="last_name" required> <br> <br>
-        
-        <label for="password">Password:</label>
-        <input type="text" id="password" required> <br> <br>
-        
-        <label for="email">Email:</label>
-        <input type="text" id="email" required> <br> <br>
-        
-        <label for="phone_number">Phone number:</label>
-        <input type="text" id="phone_number" required> <br> <br>
-        <button>Submit</button>
+      <div class="field">
+        <label class="label">{{ form.last_name.label }}</label>
+        <div class="control">{{ form.last_name(class="input") }}</div>
+      </div>
+
+      <div class="field">
+        <label class="label">{{ form.password.label }}</label>
+        <div class="control">{{ form.password(class="input") }}</div>
+      </div>
+
+      <div class="field">
+        <label class="label">{{ form.email.label }}</label>
+        <div class="control">{{ form.email(class="input") }}</div>
+      </div>
+
+      <div class="field">
+        <label class="label">{{ form.phone_number.label }}</label>
+        <div class="control">{{ form.phone_number(class="input") }}</div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button type="submit" class="button is-primary is-outlined">
+            {{ form.submit.label }}
+          </button>
+        </div>
+      </div>
     </form>
-    
-</body>
-</html> -->
+  </div>
+{% endblock %}
