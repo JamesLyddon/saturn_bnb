@@ -34,16 +34,13 @@
 
       <div class="column" >
         
-        <div class="box" style="height: 550px;">
-          <div class="card" style="height: 500px;  overflow: hidden;">
-
-             <h3 class="subtitle is-3">Select a date</h3>
-             <form method="post" action="/spaces/{{space.id}}">
-             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
-             <button type="submit" class="button is-white">Book Now</button>
-             </form>
-             <p>{{rejection_message}}</p>
-          </div>
+        <div class="box has-text-centered" style="height: 550px;">
+          <h3 class="subtitle is-3">Select a date</h3>
+            <form method="post" action="/spaces/{{space.id}}">
+              <input style="display:block; margin-left: auto; margin-right: auto;" type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
+            <button type="submit" class="button is-white">Book Now</button>
+            </form>
+          <p>{{rejection_message}}</p>
         </div>
       </div>
 
