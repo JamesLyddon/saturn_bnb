@@ -22,3 +22,10 @@ class BookingRepository:
         self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
                                  [booking.guest_id, booking.space_id, booking.date, booking.status])
         return None
+
+    def update_status(self, booking_id, new_status):
+        self._connection.execute(
+            'UPDATE bookings SET status = %s WHERE id = %s',
+            [new_status, booking_id]
+        )
+        return None

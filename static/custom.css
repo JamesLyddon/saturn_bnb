@@ -33,3 +33,15 @@ body {
 .space-form-title {
   font-size: 5rem;
 }
+
+/* Define the transition for opacity */
+.notification {
+  transition: opacity 0.5s ease-out; /* Fade out over 0.5 seconds */
+  opacity: 1; /* Default state: fully visible */
+}
+
+/* Class to trigger the fade-out */
+.notification.is-fading {
+  opacity: 0;
+  /* Optional: pointer-events: none; to make it unclickable during fade */
+}
