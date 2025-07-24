@@ -140,6 +140,9 @@ def create_space():
 
     return redirect('/spaces')
  
+@app.route("/preview")
+def preview():
+    return render_template("space_details.html")
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

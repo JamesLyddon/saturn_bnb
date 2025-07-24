@@ -83,3 +83,5 @@ def test_get_spaces(page, test_web_address, db_connection):
 
     expect(first_address).to_have_text("10 Downing St, Londo...")
     expect(last_address).to_have_text("Loch Ness Road, Inve...")
+
+    
