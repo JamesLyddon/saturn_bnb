@@ -42,15 +42,19 @@
     </nav>
 
     <section class="section is-flex-grow-1">
-        <div class="container is-flex-grow-1">
+        <div class="container">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="notification is-{{ category }} has-text-centered">
-                            <button class="delete"></button>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+                  <div class="columns is-centered"> {# Centers the single column horizontally #}
+                      <div class="column is-half is-two-thirds-tablet is-full-mobile"> {# Example widths #}
+                          {% for category, message in messages %}
+                              <div class="notification is-{{ category }} has-text-centered">
+                                  <button class="delete" type="button" aria-label="Dismiss notification"></button>
+                                  {{ message }}
+                              </div>
+                          {% endfor %}
+                      </div>
+                  </div>
                 {% endif %}
             {% endwith %}
 
