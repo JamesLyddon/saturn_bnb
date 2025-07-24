@@ -47,11 +47,11 @@ def validate_username(username):
     repo = UserRepository(connection)
     users = repo.all()
     username_exists = False
-    
+
     for user in users:
         if user.username == username:
             username_exists = True
-    
+
     if username_exists:
         raise ValidationError(
             'That username already exists. Please choose a different one.')
@@ -60,12 +60,12 @@ def validate_username(username):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
+
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
         users = repo.all()
-    
+
         for user in users:
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
@@ -85,20 +85,36 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    
+
     if form.validate_on_submit():
         hashed_password = bycrpt.generate_password_hash(form.password.data)
         hashed_password_string = hashed_password.decode('utf-8')
         new_user = User(None, username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, password=hashed_password_string, email=form.email.data, phone_number=form.phone_number.data)
-    
+
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
-        
+
         repo.create(new_user)
         flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('register.html', form=form)
+
+# This is already handled by flask login above
+# @app.route('/register', methods=["GET"])
+# def get_register():
+#     return render_template('register.html')
+
+# @app.route('/register', methods=["POST"])
+# def post_register():
+#     username = request.form.get('username')
+#     first_name = request.form.get('first_name')
+#     last_name = request.form.get('last_name')
+#     password = request.form.get('password')
+#     email = request.form.get('email')
+#     phone_number = request.form.get('phone_number')
+
+#     return f"User succesfully registered!", 200
 
 # ==== Spaces Routes ====
 @app.route('/', methods=['GET'])
@@ -115,6 +131,7 @@ def get_new_space():
     return render_template('spaces/new.html')
 
 @app.route('/spaces', methods=["POST"])
+# @login_required
 @login_required
 def create_space():
     connection = get_flask_database_connection(app)
@@ -221,4 +238,3 @@ def approve_reject_request(booking_id, action):
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-

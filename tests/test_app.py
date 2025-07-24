@@ -84,6 +84,57 @@ def test_get_spaces(page, test_web_address, db_connection):
     expect(first_address).to_have_text("10 Downing St, Londo...")
     expect(last_address).to_have_text("Loch Ness Road, Inve...")
 
+"""
+Tests for the request page routes 
+"""
+def test_get_request_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+    page.goto(f"http://{test_web_address}/login")
+    page.fill('input[name="username"]', 'janesmith')
+    page.fill('input[name="password"]', 'SuperSecret999')
+    page.click('button[type="submit"]')
+    
+    page.goto(f"http://{test_web_address}/requests")
+    print("request page")
+    
+    h2_tag = page.locator("h2", has_text="Bookings Received")
+    expect(h2_tag).to_have_text("Bookings Received")
+    
+    div_tag = page.locator(".t-approve-btn")
+    expect(div_tag).to_have_text("Approve")
+    expect(div_tag).to_be_visible()
+
+    div_tag = page.locator(".t-reject-btn")
+    expect(div_tag).to_have_text("Reject")
+    expect(div_tag).to_be_visible()
+
+
+def test_post_approve_request(page, sign_in_user, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+
+    sign_in_user()
+
+    page.goto(f"http://{test_web_address}/requests")
+    page.click('form[action="/requests/2/confirmed"] button')
+
+    result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
+    assert result[0]["status"] == "confirmed"
+    
+    
+def test_post_reject_request(page, sign_in_user, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+
+    sign_in_user()
+
+    page.goto(f"http://{test_web_address}/requests")
+    page.click('form[action="/requests/2/rejected"] button')
+
+    result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
+    assert result[0]["status"] == "rejected"
+    
+    
+
+
 
 # def test_get_space_with_id(page, test_web_address, db_connection):
 #     db_connection.seed("seeds/bnb_seed.sql")
