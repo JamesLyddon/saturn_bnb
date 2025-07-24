@@ -1,6 +1,7 @@
 import os
 # ==== packages ====
 from flask import Flask, request, render_template, url_for, redirect, flash
+from flask_mail import Mail, Message
 from lib.database_connection import get_flask_database_connection
 from wtforms.validators import ValidationError
 from flask_bcrypt import Bcrypt
@@ -18,6 +19,9 @@ from lib.booking_repository import BookingRepository
 # ==== Set up ====
 # Create a new Flask app
 app = Flask(__name__)
+
+# initialise flask_mail
+mail = Mail(app)
 
 # Password hashing using bycrpt
 bycrpt = Bcrypt(app)
@@ -51,7 +55,16 @@ def validate_username(username):
         raise ValidationError(
             'That username already exists. Please choose a different one.')
 
-# ==== Register, Login, Logout, Dashboard Routes ====
+# ==== Mail setup ====
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'saturnbnb78@gmail.com'
+app.config['MAIL_PASSWORD'] = 'SuperSecret999'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = True
+
+# ==== Register, Login, Logout Routes ====
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
