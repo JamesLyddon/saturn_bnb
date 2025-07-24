@@ -136,7 +136,7 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
-@app.route('/requests/<int:booking_id>', methods=['POST'])
+@app.route('/requests/<int:booking_id>/approve', methods=['POST'])
 @login_required
 def approve_request(booking_id):
     connection = get_flask_database_connection(app)
@@ -162,7 +162,7 @@ def approve_request(booking_id):
     flash('Booking approved!', 'success')
     return redirect(url_for('get_all_requests'))
 
-@app.route('/requests/<int:booking_id>', methods=['POST'])
+@app.route('/requests/<int:booking_id>/reject', methods=['POST'])
 @login_required
 def reject_request(booking_id):
     connection = get_flask_database_connection(app)
