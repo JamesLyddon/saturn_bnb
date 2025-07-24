@@ -40,11 +40,46 @@
         </div>
       </div>
     </nav>
-    <div class="container mt-6 mb-6">{% block content %}{% endblock %}</div>
+
+    <section class="section is-flex-grow-1">
+        <div class="container is-flex-grow-1">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="notification is-{{ category }} has-text-centered">
+                            <button class="delete"></button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </section>
+
     <footer class="footer pt-6 pb-6">
       <div class="content has-text-centered">
         <p><strong>saturn bnb</strong> group 1 <strong>© 2025</strong></p>
       </div>
     </footer>
+
+
+    <script>
+        // JavaScript to make the delete button work for notifications
+        document.addEventListener('DOMContentLoaded', () => {
+          (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+              $notification.parentNode.removeChild($notification);
+            });
+          });
+        });
+    </script>
+
   </body>
 </html>

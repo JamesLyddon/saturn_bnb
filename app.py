@@ -88,7 +88,7 @@ def register():
         repo = UserRepository(connection)
 
         repo.create(new_user)
-
+        flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
@@ -140,6 +140,7 @@ def create_space():
     space = Space(None, host_id, title, description, price, address)
 
     repo.create(space)
+    flash(f'Your "{title}" space has been successfully listed!', 'success')
 
     return redirect('/spaces')
 
@@ -154,56 +155,40 @@ def get_all_requests():
     
     return render_template('requests.html', requests=requests)
 
-@app.route('/requests/<int:booking_id>', methods=['POST'])
+@app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
-def approve_request(booking_id):
+def approve_reject_request(booking_id, action):
+    actions = ['confirmed', 'rejected']
+    if action not in actions:
+        flash('Invalid action', 'danger')
+        return redirect(url_for('get_all_requests'))
+    
     connection = get_flask_database_connection(app)
+    
     bookings_repo = BookingRepository(connection)
     booking = bookings_repo.find(booking_id)
-    space_repo = SpaceRepository(connection)
-    space = space_repo.find(booking.space_id)
+    
     # make sure the booking still exists
     if not booking:
         flash('Booking not found.', 'danger')
         return redirect(url_for('get_all_requests'))
+    
+    space_repo = SpaceRepository(connection)
+    space = space_repo.find(booking.space_id)
+    
     # make sure the current_user is the host/owner of the space
     if not space or space.host_id != current_user.id:
         flash('You are not authorized to reject this booking', 'danger')
         return redirect(url_for('get_all_requests'))
-    # change booking status
-    bookings_repo.update_status(booking_id, 'confirmed')
+    
+    # change booking status based on action
+    bookings_repo.update_status(booking_id, action)
+    flash(f'Booking {action}', 'success' if action == 'confirmed' else 'danger')
     
     # Add logic here to send emails
     #
     #
     
-    flash('Booking approved!', 'success')
-    return redirect(url_for('get_all_requests'))
-
-@app.route('/requests/<int:booking_id>', methods=['POST'])
-@login_required
-def reject_request(booking_id):
-    connection = get_flask_database_connection(app)
-    bookings_repo = BookingRepository(connection)
-    booking = bookings_repo.find(booking_id)
-    space_repo = SpaceRepository(connection)
-    space = space_repo.find(booking.space_id)
-    # make sure the booking still exists
-    if not booking:
-        flash('Booking not found.', 'danger')
-        return redirect(url_for('get_all_requests'))
-    # make sure the current_user is the host/owner of the space
-    if not space or space.host_id != current_user.id:
-        flash('You are not authorized to reject this booking', 'danger')
-        return redirect(url_for('get_all_requests'))
-    # change booking status
-    bookings_repo.update_status(booking_id, 'rejected')
-    
-    # Add logic here to send emails
-    #
-    #
-    
-    flash('Booking rejected!', 'rejected')
     return redirect(url_for('get_all_requests'))
 
 
