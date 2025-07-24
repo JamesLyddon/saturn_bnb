@@ -1,6 +1,6 @@
 import os
 # ==== packages ====
-from flask import Flask, request, render_template, url_for, redirect, flash
+from flask import Flask, request, render_template, url_for, redirect, flash, current_app
 from flask_mail import Mail, Message
 from lib.database_connection import get_flask_database_connection
 from wtforms.validators import ValidationError
@@ -14,13 +14,10 @@ from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
-
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
-
 from lib.request_repository import RequestRepository
 from lib.booking_repository import BookingRepository
-
 
 # ==== Set up ====
 # load environment variables
@@ -239,8 +236,29 @@ def approve_reject_request(booking_id, action):
         flash(f'Booking {action}!', flash_category)
 
     # Add logic here to send emails
-    msg = Message('Hello', sender='saturnbnb78@gmail.com', recipients=['jameslyddon@gmail.com'])
-    msg.body = 'Hello from SaturnBNB'
+    requests_repo = RequestRepository(connection)
+    current_request = requests_repo.find_by_booking_id(booking_id)
+    user_repo = UserRepository(connection)
+    
+    html_body = render_template(
+        'emails/booking_confirmation.html',
+        guest_name=user_repo.find(current_request.guest_id).first_name,
+        space_title=current_request.title,
+        booking_date=current_request.date,
+        status=action,
+        space_address=current_request.address,
+        space_price=current_request.price,
+        host_email=current_request.host_email,
+        space_id=current_request.space_id
+    )
+    
+    msg = Message(
+        subject='subject',
+        sender=current_app.config['MAIL_DEFAULT_SENDER'],
+        recipients=['jameslyddon@gmail.com']
+    )
+    
+    msg.html = html_body
     mail.send(msg)
     
     return redirect(url_for('get_all_requests'))

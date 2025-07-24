@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Booking Confirmation</title>
+    <style>
+      /* Embed your CSS directly here */
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        width: 80%;
+        margin: 20px auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+      h1 {
+        color: #04d1b2;
+      } /* Bulma primary color */
+      h2 {
+        color: #555;
+      }
+      p {
+        margin-bottom: 10px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #04d1b2; /* Bulma primary color */
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .footer {
+        font-size: 0.8em;
+        color: #777;
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Hello {{ guest_name }},</h1>
+      <p>
+        Your booking for <strong>{{ space_title }}</strong> on
+        <strong>{{ booking_date }}</strong> has been {{ status }}.
+      </p>
+
+      {% if status == 'confirmed' %}
+        <h2>Booking Details:</h2>
+        <ul>
+          <li><strong>Space:</strong> {{ space_title }}</li>
+          <li><strong>Address:</strong> {{ space_address }}</li>
+          <li><strong>Price:</strong> £{{ space_price }}</li>
+          <li><strong>Date:</strong> {{ booking_date }}</li>
+          <li><strong>Host Contact:</strong> {{ host_email }}</li>
+        </ul>
+        <p>We look forward to your stay!</p>
+        <p>
+          <a
+            href="{{ url_for('get_space_with_id', id=space_id, _external=true) }}"
+            class="button"
+            >View Space Details</a
+          >
+        </p>
+      {% else %}
+        <p>
+          We regret to inform you that your booking for
+          <strong>{{ space_title }}</strong> on
+          <strong>{{ booking_date }}</strong> has been {{ status }}.
+        </p>
+        <p>
+          If you have any questions, please contact the host at
+          {{ host_email }}.
+        </p>
+      {% endif %}
+
+      <p class="footer">Thank you for using SaturnBNB!</p>
+    </div>
+  </body>
+</html>
