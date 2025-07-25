@@ -1,12 +1,35 @@
-# MakersBnB Python Project Seed
+# SaturnBNB
+A comprenehensive Airbnb-like website with a frontend and backend, incorporating authentication, viewing, and booking places to stay. 
 
-This repo contains the seed codebase for the MakersBnB project in Python (using
-Flask and Pytest).
+## Features
 
-Someone in your team should fork this seed repo to their GitHub account.
-Everyone in the team should then clone this fork to their local machine to work on it.
+### Register/Login
+- Users can register and log in.
 
-> NOTE: If you encounter a `ModuleNotFound` error, deactivate and then reactivate your virtual env. If that doesn't help, please reach out to your coach.
+### Authentication
+- Only authorised users can:
+    - Add a space. 
+    - Book a space.
+    - View requests made/received.
+
+### Spaces
+- Users can view:
+    - All spaces
+    - A singular place with all its details, including name, description, and price.
+
+### Requests
+- Can request to book a space on a particular day.
+- Only request to book a space that isn't already booked.
+- See all the requests they have made/received
+- Accept or reject requests they have received
+- See if their request has been accepted.
+
+### Email notifications
+- A user will receive an email notification if they have:
+    - Requested to book a space.
+    - Received a request to book their space.
+    - Had their booking request accepted.
+
 
 ## Setup
 
@@ -22,11 +45,13 @@ Everyone in the team should then clone this fork to their local machine to work 
 
 # Install the virtual browser we will use for testing
 (makersbnb-venv); playwright install
-# If you have problems with the above, contact your coach
+
+# Install all node dependencies
+(makersbnb-venv); npm install
 
 # Create a test and development database
-(makersbnb-venv); createdb YOUR_PROJECT_NAME
-(makersbnb-venv); createdb YOUR_PROJECT_NAME_TEST
+(makersbnb-venv); createdb saturn_bbn
+(makersbnb-venv); createdb saturn_bnb_test
 
 # Open lib/database_connection.py and change the database names
 (makersbnb-venv); open lib/database_connection.py
@@ -38,43 +63,4 @@ Everyone in the team should then clone this fork to their local machine to work 
 (makersbnb-venv); python app.py
 
 # Now visit http://localhost:5001/index in your browser
-```
 
-DATABASE_NAME = 'saturnbnb'
-
-make a new branch
-
-```shell
- git switch -c some-new-branch
-```
-
-push to github and make a new branch
-
-```shell
-git push --set-upstream origin some-new-branch
-```
-
-go back to main
-
-```shell
-git switch main
-```
-
-===================================
-
-Flask-login docs https://flask-login.readthedocs.io/en/latest/
-
-With Flask-login you can now reference the logged in user within any template like so
-
-```html
-{% if current_user.is_authenticated %} Hi {{ current_user.name }}! {% endif %}
-```
-
-You can also prevent users from accessing a page if they are not logged in with the `login_required` decorator
-
-```python
-@app.route("/settings")
-@login_required
-def settings():
-    pass
-```
