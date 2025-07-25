@@ -221,13 +221,16 @@ def handle_booking_request(id):
         booking = Booking(None, current_user.id, space_id, date, 'pending')
         booking_id = booking_repo.create(booking)
         
+        requests_repo = RequestRepository(connection)
+        current_request = requests_repo.find_by_booking_id(booking_id)
+        
         # send new request receieved to host
         send_email(
             connection,
             booking_id,
             'emails/host_confirmation.html',
             'New Booking Request',
-            ['current_request.host_email', 'jameslyddon@gmail.com']
+            [current_request.host_email]
         )
         
         # send request receieved confirmation to guest
@@ -236,7 +239,7 @@ def handle_booking_request(id):
             booking_id,
             'emails/guest_confirmation.html',
             'Booking Request Received',
-            ['current_request.guest_email', 'jameslyddon@gmail.com']
+            [current_user.email]
         )
 
         return redirect('/requests')
@@ -286,12 +289,15 @@ def approve_reject_request(booking_id, action):
         flash(f'Booking {action}!', flash_category)
 
     # Send confirmation/rejection email to guest
+    requests_repo = RequestRepository(connection)
+    current_request = requests_repo.find_by_booking_id(booking_id)
+    
     send_email(
         connection,
         booking_id,
         'emails/booking_confirmation.html',
         f'Your Booking Has Been f{action}',
-        ['current_request.guest_email', 'jameslyddon@gmail.com'],
+        [current_request.guest_email],
         action
     )
     
