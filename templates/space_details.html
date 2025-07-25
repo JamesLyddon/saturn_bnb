@@ -31,13 +31,13 @@
         </div>
       </div>
 
-      <div class="column" >
-        <div class="box has-text-centered" style="height: 550px;">
-            <form method="post" action="/spaces/{{space.id}}">
-              <input style="display:block; margin-left: auto; margin-right: auto;" type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
-            <button type="submit" class="button is-primary is-outlined t-create-space-btn">Book Now</button>
-            </form>
-          <p id="rejection_message" style="display: none;">{{rejection_message}}</p>
+      <div class="column">
+        <div class="box has-text-centered" style="height: 550px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <form method="post" action="/spaces/{{space.id}}" style="width: 100%; max-width: 400px;">
+            <input type="date" class="input is-fullwidth mb-4" id="date" name="date" data-display-mode="inline" data-close-on-select="false">
+            <button type="submit" class="button is-primary is-outlined" style="padding-left: 7.5rem; padding-right: 7.5rem;">Book Now</button>
+          </form>
+           <p id="rejection_message" style="display: none;">{{rejection_message}}</p>
         </div>
       </div>
 
