@@ -1,35 +1,48 @@
 import os
 # ==== packages ====
-from flask import Flask, request, render_template, url_for, redirect, flash
+from flask import Flask, request, render_template, url_for, redirect, flash, current_app
+from flask_mail import Mail, Message
 from lib.database_connection import get_flask_database_connection
 from wtforms.validators import ValidationError
 from flask_bcrypt import Bcrypt
 from lib.forms.register_form import RegisterForm
 from lib.forms.login_form import LoginForm
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
+from dotenv import load_dotenv
 # ==== Models & Repos ====
 from lib.space_repository import SpaceRepository
 from lib.space import Space
 from lib.user_repository import UserRepository
 from lib.user import User
-
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
-
 from lib.request_repository import RequestRepository
 from lib.booking_repository import BookingRepository
 
-
 # ==== Set up ====
+# load environment variables
+load_dotenv()
+
 # Create a new Flask app
 app = Flask(__name__)
 
 # Password hashing using bycrpt
 bycrpt = Bcrypt(app)
 
-# Example for development (can go through setting up a .env file together later)
-app.config['SECRET_KEY'] = 'supersecretkey'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
+# Mail Setup
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+
+# initialise flask_mail
+mail = Mail(app)
+
+# initialise login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -47,25 +60,54 @@ def validate_username(username):
     repo = UserRepository(connection)
     users = repo.all()
     username_exists = False
-    
+
     for user in users:
         if user.username == username:
             username_exists = True
-    
+
     if username_exists:
         raise ValidationError(
             'That username already exists. Please choose a different one.')
 
-# ==== Register, Login, Logout, Dashboard Routes ====
+# send email helper
+def send_email(connection, booking_id, template, subject, recipients, status='pending'):
+    requests_repo = RequestRepository(connection)
+    user_repo = UserRepository(connection)
+    current_request = requests_repo.find_by_booking_id(booking_id)
+    
+    html_body = render_template(
+        template,
+        host_name=user_repo.find(current_request.host_id).first_name,
+        guest_name=user_repo.find(current_request.guest_id).first_name,
+        space_title=current_request.title,
+        booking_date=current_request.date,
+        space_address=current_request.address,
+        space_price=current_request.price,
+        host_email=current_request.host_email,
+        guest_email=current_request.guest_email,
+        space_id=current_request.space_id,
+        status=status
+    )
+    
+    msg = Message(
+        subject=subject,
+        sender=current_app.config['MAIL_DEFAULT_SENDER'],
+        recipients=recipients
+    )
+    
+    msg.html = html_body
+    mail.send(msg)
+
+# ==== Register, Login, Logout Routes ====
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
+
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
         users = repo.all()
-    
+
         for user in users:
             if user.username == form.username.data:
                 if bycrpt.check_password_hash(user.password, form.password.data):
@@ -85,19 +127,19 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    
+
     if form.validate_on_submit():
         hashed_password = bycrpt.generate_password_hash(form.password.data)
         hashed_password_string = hashed_password.decode('utf-8')
         new_user = User(None, username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, password=hashed_password_string, email=form.email.data, phone_number=form.phone_number.data)
-    
+
         connection = get_flask_database_connection(app)
         repo = UserRepository(connection)
-        
+
         repo.create(new_user)
         flash(f'Account created, welcome {form.first_name.data}! Now login to continue', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('register.html', form=form)
 
 # ==== Spaces Routes ====
@@ -150,6 +192,7 @@ def get_all_requests():
     return render_template('requests.html', requests=requests)
 
 @app.route('/spaces/<int:id>', methods=["GET"])
+@login_required
 def get_space_with_id(id):
     connection = get_flask_database_connection(app)
     repo = SpaceRepository(connection)
@@ -159,6 +202,7 @@ def get_space_with_id(id):
     return render_template('space_details.html', space = space)
 
 @app.route('/spaces/<int:id>', methods=["POST"])
+@login_required
 def handle_booking_request(id):
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
@@ -175,7 +219,29 @@ def handle_booking_request(id):
     if is_available:
        
         booking = Booking(None, current_user.id, space_id, date, 'pending')
-        booking_repo.create(booking)
+        booking_id = booking_repo.create(booking)
+        
+        requests_repo = RequestRepository(connection)
+        current_request = requests_repo.find_by_booking_id(booking_id)
+        
+        # send new request receieved to host
+        send_email(
+            connection,
+            booking_id,
+            'emails/host_confirmation.html',
+            'New Booking Request',
+            [current_request.host_email]
+        )
+        
+        # send request receieved confirmation to guest
+        send_email(
+            connection,
+            booking_id,
+            'emails/guest_confirmation.html',
+            'Booking Request Received',
+            [current_user.email]
+        )
+
         return redirect('/requests')
     else:
         return render_template('space_details.html', space = space, rejection_message = 'Date already booked')
@@ -207,11 +273,32 @@ def approve_reject_request(booking_id, action):
     
     # change booking status based on action
     bookings_repo.update_status(booking_id, action)
-    flash(f'Booking {action}', 'success' if action == 'confirmed' else 'danger')
     
-    # Add logic here to send emails
-    #
-    #
+    flash_category = 'success' if action == 'confirmed' else 'danger'
+    
+    # search for similar pending requests and auto reject them
+    if action == 'confirmed':
+        bookings_repo.reject_similar_pending(
+            confirmed_space_id=booking.space_id,
+            confirmed_date=booking.date,
+            confirmed_booking_id=booking.id
+        )
+        flash(f'Booking {action}! Any similar requests rejected', flash_category)
+    else:
+        flash(f'Booking {action}!', flash_category)
+
+    # Send confirmation/rejection email to guest
+    requests_repo = RequestRepository(connection)
+    current_request = requests_repo.find_by_booking_id(booking_id)
+    
+    send_email(
+        connection,
+        booking_id,
+        'emails/booking_confirmation.html',
+        f'Your Booking Has Been f{action}',
+        [current_request.guest_email],
+        action
+    )
     
     return redirect(url_for('get_all_requests'))
 
@@ -221,4 +308,3 @@ def approve_reject_request(booking_id, action):
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-

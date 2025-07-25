@@ -19,9 +19,10 @@ class BookingRepository:
         return Booking(row["id"], row["guest_id"], row["space_id"], row["date"], row["status"])
     
     def create(self, booking):
-        self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s)',
-                                 [booking.guest_id, booking.space_id, booking.date, booking.status])
-        return None
+        rows = self._connection.execute('INSERT INTO bookings (guest_id, space_id, date, status) VALUES (%s, %s, %s, %s) RETURNING id',
+            [booking.guest_id, booking.space_id, booking.date, booking.status])
+        new_id = rows[0]['id']
+        return new_id
     
     def is_available(self, date, space_id):
         rows = self._connection.execute("SELECT * FROM bookings WHERE date = %s AND status = 'confirmed' AND space_id = %s", [date, space_id])
@@ -35,5 +36,24 @@ class BookingRepository:
         self._connection.execute(
             'UPDATE bookings SET status = %s WHERE id = %s',
             [new_status, booking_id]
+        )
+        return None
+
+    def reject_similar_pending(self, confirmed_space_id, confirmed_date, confirmed_booking_id):
+        """
+        Rejects all other pending bookings for a given space_id and date,
+        excluding the booking that was just confirmed
+        """
+        self._connection.execute(
+            """
+            UPDATE bookings
+            SET status = 'rejected'
+            WHERE
+                space_id = %s AND
+                date = %s AND
+                status = 'pending' AND
+                id != %s;
+            """,
+            [confirmed_space_id, confirmed_date, confirmed_booking_id]
         )
         return None

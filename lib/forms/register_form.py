@@ -14,7 +14,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField(validators=[
         InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
     email = EmailField(validators=[
-        InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Email"})
+        InputRequired(), Length(min=8, max=70)], render_kw={"placeholder": "Email"})
     phone_number = StringField(validators=[
         InputRequired(), Length(min=11, max=20)], render_kw={"placeholder": "Phone number"})
     submit = SubmitField('Register')

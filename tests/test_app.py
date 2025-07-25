@@ -8,49 +8,75 @@ def client():
     app.config["TESTING"] = True
     return app.test_client()
 
-# def test_get_signup_page(page, test_web_address):
-#     page.goto(f"http://{test_web_address}/register")
 
-#     h2_tag = page.locator("h2")
-#     expect(h2_tag).to_have_text("Register a new user")
-    
-#     label_tag = page.locator("label").nth(0)
-#     expect(label_tag).to_have_text("User name:")
-    
-#     label_tag = page.locator("label").nth(1)
-#     expect(label_tag).to_have_text("First name:")
-    
-#     label_tag = page.locator("label").nth(2)
-#     expect(label_tag).to_have_text("Last name:")
-    
-#     label_tag = page.locator("label").nth(3)
-#     expect(label_tag).to_have_text("Password:")
-    
-#     label_tag = page.locator("label").nth(4)
-#     expect(label_tag).to_have_text("Email:")
-    
-#     label_tag = page.locator("label").nth(5)
-#     expect(label_tag).to_have_text("Phone number:")
+"""
+Tests for new user sign up page
+"""
+def test_get_signup_page(page, test_web_address):
+    page.goto(f"http://{test_web_address}/register")
 
-#     button_tag = page.locator("button")
-#     expect(button_tag).to_have_text("Submit")
+    h1_tag = page.locator(".t-headline")
+    expect(h1_tag).to_have_text("Register")
 
-# def test_register_success(client):
-#     response = client.post('/register', data={
-#         'username': 'Saima1',
-#         'first_name': 'Saima',
-#         'last_name': 'Abdus',
-#         'password': 'saima123',
-#         'email': 'saima@email.com',
-#         'phone_number': '01234567890',
-#     })
-#     assert response.status_code == 200
-#     assert f"User succesfully registered!"
+    label_tag = page.locator("label.label").nth(0)
+    expect(label_tag).to_have_text("Username")
+    
+    label_tag = page.locator("label.label").nth(1)
+    expect(label_tag).to_have_text("First Name")
+    
+    label_tag = page.locator("label.label").nth(2)
+    expect(label_tag).to_have_text("Last Name")
+    
+    label_tag = page.locator("label.label").nth(3)
+    expect(label_tag).to_have_text("Password")
+    
+    label_tag = page.locator("label.label").nth(4)
+    expect(label_tag).to_have_text("Email")
+    
+    label_tag = page.locator("label.label").nth(5)
+    expect(label_tag).to_have_text("Phone Number")
+    
+    button_tag = page.locator("button")
+    expect(button_tag).to_have_text("Register")
 
 
+def test_user_registration_successful(client):
+    response = client.post('/register', data={
+        'username': 'Saima1',
+        'first_name': 'Saima',
+        'last_name': 'Abdus',
+        'password': 'saima123',
+        'email': 'saima@email.com',
+        'phone_number': '01234567890',
+    })
+    assert response.status_code == 200
+    assert f"User succesfully registered!"
 
-# def test_post_new_user(page, test_web_address):
-#     page.goto(f"http://{test_web_address}/register")
+
+
+"""
+Tests for sign-in page
+"""
+def test_get_signin_page(page, test_web_address):
+    page.goto(f"http://{test_web_address}/login")
+    
+    h1_tag = page.locator(".t-headline")
+    expect(h1_tag).to_have_text("Login")
+    
+    label_tag = page.locator("label.label").nth(0)
+    expect(label_tag).to_have_text("Username")
+    
+    label_tag = page.locator("label.label").nth(1)
+    expect(label_tag).to_have_text("Password")
+    
+def test_user_signin_successfully(client):
+        response = client.post('/login', data={
+            'username': 'Saima1',
+            'password': 'saima123',
+        })
+        assert response.status_code == 200
+        assert f"Logged in, welcome back Saima1', 'success'"
+    
 
 
 """
@@ -83,6 +109,57 @@ def test_get_spaces(page, test_web_address, db_connection):
 
     expect(first_address).to_have_text("10 Downing St, Londo...")
     expect(last_address).to_have_text("Loch Ness Road, Inve...")
+
+"""
+Tests for the request page routes 
+"""
+def test_get_request_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+    page.goto(f"http://{test_web_address}/login")
+    page.fill('input[name="username"]', 'janesmith')
+    page.fill('input[name="password"]', 'SuperSecret999')
+    page.click('button[type="submit"]')
+    
+    page.goto(f"http://{test_web_address}/requests")
+    print("request page")
+    
+    h2_tag = page.locator("h2", has_text="Bookings Received")
+    expect(h2_tag).to_have_text("Bookings Received")
+    
+    div_tag = page.locator(".t-approve-btn")
+    expect(div_tag).to_have_text("Approve")
+    expect(div_tag).to_be_visible()
+
+    div_tag = page.locator(".t-reject-btn")
+    expect(div_tag).to_have_text("Reject")
+    expect(div_tag).to_be_visible()
+
+
+def test_post_approve_request(page, sign_in_user, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+
+    sign_in_user()
+
+    page.goto(f"http://{test_web_address}/requests")
+    page.click('form[action="/requests/2/confirmed"] button')
+
+    result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
+    assert result[0]["status"] == "confirmed"
+    
+    
+def test_post_reject_request(page, sign_in_user, test_web_address, db_connection):
+    db_connection.seed("seeds/bnb_seed.sql")
+
+    sign_in_user()
+
+    page.goto(f"http://{test_web_address}/requests")
+    page.click('form[action="/requests/2/rejected"] button')
+
+    result = db_connection.execute("SELECT status FROM bookings WHERE id = 2")
+    assert result[0]["status"] == "rejected"
+    
+    
+
 
 
 # def test_get_space_with_id(page, test_web_address, db_connection):
