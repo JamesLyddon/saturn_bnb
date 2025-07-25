@@ -54,3 +54,19 @@ body {
   margin-right: auto;
   margin-bottom: 1rem;
 }
+
+.navbar-brand .navbar-item img {
+  max-height: 8rem; /* Adjust as needed */
+  width: auto;
+}
+
+/* Optional: If your h1 is next to the image and causing issues on small screens */
+.navbar-brand .navbar-item h1 {
+  font-size: 1.5rem !important; /* Adjust if it's too big next to the logo */
+  line-height: 1; /* Align vertically with image */
+  white-space: nowrap; /* Prevent breaking title onto multiple lines */
+}
+
+nav.navbar {
+  min-height: 8rem;
+}
