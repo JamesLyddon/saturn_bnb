@@ -8,6 +8,7 @@ email_validator==2.2.0
 Flask==3.0.2
 Flask-Bcrypt==1.0.1
 Flask-Login==0.6.3
+Flask-Mail==0.10.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
 greenlet==3.2.3
@@ -26,6 +27,7 @@ pytest==8.1.1
 pytest-base-url==2.1.0
 pytest-playwright==0.4.4
 pytest-xprocess==0.23.0
+python-dotenv==1.1.1
 python-slugify==8.0.4
 requests==2.32.4
 SQLAlchemy==2.0.41
