@@ -5,7 +5,7 @@
 <section class="section">
   <div class="title-container" style="margin-bottom: 1.5rem">
     <h1 class="title is-1">{{space.title}}</h1>
-    <h2 class="subtitle is-2">{{space.address}}</h2>
+    <h2 class="subtitle is-4">{{space.address}}</h2>
   </div>
 
  <div class="columns is-multiline is-variable is-2">
@@ -14,7 +14,6 @@
         
       <div class="column" >
         <div class="box" style="height: 550px;">
-          <div class="card" style="height: 500px; " >
             <div class="image-description-1" style="height: 350px; overflow: hidden;">
              <figure class="image is-4x3">
               <img
@@ -24,42 +23,37 @@
               />
             </figure>
             </div>
-            <div class="text-description-1" style="padding: 20px;">
+            <div class="text-description-1" style="padding: 20px 30px;">
             <h5 class="subtitle is-5">{{space.description}}</h5>
+            <br>
             <h1 class="title is-3 is-primary">£{{space.price}} per night</h1>
             </div>
-          </div>
         </div>
       </div>
 
-      <div class="column" >
-        
-        <div class="box" style="height: 550px;">
-          <div class="card" style="height: 500px;  overflow: hidden;">
-
-             <h3 class="subtitle is-3">Select a date</h3>
-             <form method="post" action="/spaces/{{space.id}}">
-             <input type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
-             <button type="submit" class="button is-white">Book Now</button>
-             </form>
-             <p>{{rejection_message}}</p>
-          </div>
+      <div class="column">
+        <div class="box has-text-centered" style="height: 550px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <form method="post" action="/spaces/{{space.id}}" style="width: 100%; max-width: 400px;">
+            <input type="date" class="input is-fullwidth mb-4" id="date" name="date" data-display-mode="inline" data-close-on-select="false">
+            <button type="submit" class="button is-primary is-outlined" style="padding-left: 7.5rem; padding-right: 7.5rem;">Book Now</button>
+          </form>
+           <p id="rejection_message" style="display: none;">{{rejection_message}}</p>
         </div>
       </div>
 
     </div>
   </div>
   <script src="{{url_for('static', filename='bulma-calendar.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='sweetalert2.all.min.js') }}"></script>
   <script>
     const today = new Date().toISOString().split('T')[0]
-
     const options = {
                 type:"date",
                 displayMode: 'inline',
                 closeOnSelect: false,
                 weekStart: 0,
                 color: 'primary',
-                minDate: today,  
+                minDate: today,
             
     }
     // Initialize all input of type date
@@ -81,6 +75,20 @@
             console.log(datepicker.data.value());
         });
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+    const rejectionMessage = document.getElementById('rejection_message')?.textContent;
+    if (rejectionMessage && rejectionMessage.trim() !== '') {
+      Swal.fire({
+            title: "Please select another date",
+            text: rejectionMessage,
+            icon: "error",
+            confirmButtonColor: "#d33"
+          });
+    }
+    });
+
+    
   </script>
 </section>
 

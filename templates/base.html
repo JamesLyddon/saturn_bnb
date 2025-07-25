@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
     <link href="{{url_for('static', filename='bulma-calendar.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='sweetalert2.min.css')}}" rel="stylesheet">
         <script
       src="https://kit.fontawesome.com/f91e3b0532.js"
       crossorigin="anonymous"
@@ -20,10 +21,10 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="{{ url_for('get_all_spaces') }}">
-          <h1 class="title is-1" style="color: #04d1b2;">🪐 saturn bnb</h1>
+            <img src="{{ url_for('static', filename='img/saturn_bnb_logo.png') }}" alt="Placeholder image" />
         </a>
       </div>
-        <div class="navbar-end">
+        <div class="navbar-end is-align-items-flex-start">
           <div class="navbar-item">
             <div class="buttons">
               {% if current_user.is_authenticated %}

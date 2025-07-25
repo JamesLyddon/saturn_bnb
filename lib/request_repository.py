@@ -50,3 +50,10 @@ class RequestRepository:
             )
             requests.append(item)
         return requests
+
+    def find_by_booking_id(self, booking_id):
+        all_requests = self.all()
+        for request in all_requests:
+            if request.booking_id == booking_id:
+                return request
+        return None
