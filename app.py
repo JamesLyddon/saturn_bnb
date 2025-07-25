@@ -244,8 +244,7 @@ def handle_booking_request(id):
 
         return redirect('/requests')
     else:
-        return render_template('space_details.html', space = space, rejection_message = 'Dates not available')
-
+        return render_template('space_details.html', space = space, rejection_message = 'Date already booked')
 @app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
 def approve_reject_request(booking_id, action):
