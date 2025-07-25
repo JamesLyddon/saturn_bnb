@@ -1,32 +1,34 @@
 # SaturnBNB
-A comprenehensive AirBnB like website with a frontend, backend, incorporating authentication, viewing and booking places to stay. 
+A comprenehensive Airbnb-like website with a frontend and backend, incorporating authentication, viewing, and booking places to stay. 
 
 ## Features
 
 ### Register/Login
-- Users can register and login.
+- Users can register and log in.
 
 ### Authentication
-- Only authorised users can add a space. 
-- Only authorised book a space.
-- Only authorised users can view requests made/recieved.
+- Only authorised users can:
+    - Add a space. 
+    - Book a space.
+    - View requests made/received.
 
 ### Spaces
-- Users can view all spaces
-- Users can view a singular place with all its details, including name, description and price.
+- Users can view:
+    - All spaces
+    - A singular place with all its details, including name, description, and price.
 
 ### Requests
 - Can request to book a space on a particular day.
-- Only request to book a space that isnt already booked.
+- Only request to book a space that isn't already booked.
 - See all the requests they have made/received
 - Accept or reject requests they have received
-- See if their request have been accepted.
+- See if their request has been accepted.
 
 ### Email notifications
-- A user will receive an email notification if they have
-    - requested to book a space.
-    - received a request to book their space.
-    - had their booking request accepted.
+- A user will receive an email notification if they have:
+    - Requested to book a space.
+    - Received a request to book their space.
+    - Had their booking request accepted.
 
 
 ## Setup
@@ -43,9 +45,8 @@ A comprenehensive AirBnB like website with a frontend, backend, incorporating au
 
 # Install the virtual browser we will use for testing
 (makersbnb-venv); playwright install
-# If you have problems with the above, contact your coach
 
-# Install all node dependancies
+# Install all node dependencies
 (makersbnb-venv); npm install
 
 # Create a test and development database
