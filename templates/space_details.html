@@ -23,7 +23,7 @@
               />
             </figure>
             </div>
-            <div class="text-description-1" style="padding: 20px;">
+            <div class="text-description-1" style="padding: 20px 30px;">
             <h5 class="subtitle is-5">{{space.description}}</h5>
             <br>
             <h1 class="title is-3 is-primary">£{{space.price}} per night</h1>
@@ -32,30 +32,28 @@
       </div>
 
       <div class="column" >
-        
         <div class="box has-text-centered" style="height: 550px;">
-          <h3 class="subtitle is-3">Select a date</h3>
             <form method="post" action="/spaces/{{space.id}}">
               <input style="display:block; margin-left: auto; margin-right: auto;" type="date" class="input" data-display-mode="inline" data-close-on-select="false" id="date" name="date" >
-            <button type="submit" class="button is-white">Book Now</button>
+            <button type="submit" class="button is-primary is-outlined t-create-space-btn">Book Now</button>
             </form>
-          <p>{{rejection_message}}</p>
+          <p id="rejection_message" style="display: none;">{{rejection_message}}</p>
         </div>
       </div>
 
     </div>
   </div>
   <script src="{{url_for('static', filename='bulma-calendar.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='sweetalert2.all.min.js') }}"></script>
   <script>
     const today = new Date().toISOString().split('T')[0]
-
     const options = {
                 type:"date",
                 displayMode: 'inline',
                 closeOnSelect: false,
                 weekStart: 0,
                 color: 'primary',
-                minDate: today,  
+                minDate: today,
             
     }
     // Initialize all input of type date
@@ -77,6 +75,20 @@
             console.log(datepicker.data.value());
         });
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+    const rejectionMessage = document.getElementById('rejection_message')?.textContent;
+    if (rejectionMessage && rejectionMessage.trim() !== '') {
+      Swal.fire({
+            title: "Please select another date",
+            text: rejectionMessage,
+            icon: "error",
+            confirmButtonColor: "#d33"
+          });
+    }
+    });
+
+    
   </script>
 </section>
 
