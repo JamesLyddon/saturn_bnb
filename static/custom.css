@@ -62,8 +62,9 @@ nav.navbar {
 }
 
 /* logo animation */
-.navbar-brand .navbar-item img.animated-logo {
+.navbar-brand .navbar-item > img.animated-logo {
   transform-origin: bottom center;
+  animation: idleFloat 5s ease-in-out infinite;
 }
 
 @keyframes idleFloat {
@@ -77,4 +78,18 @@ nav.navbar {
   100% {
     transform: translateY(-5px) rotateY(-20deg);
   }
+}
+
+.navbar-brand {
+  perspective: 800px;
+}
+
+#tsparticles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
 }

@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
     <link href="{{url_for('static', filename='bulma-calendar.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='sweetalert2.min.css')}}" rel="stylesheet">
@@ -18,6 +19,9 @@
     <title>{% block title %}🪐bnb{% endblock %}</title>
   </head>
   <body>
+
+    <div id="tsparticles"></div>
+
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="{{ url_for('get_all_spaces') }}">
@@ -112,6 +116,83 @@
                     dismissNotification($notification);
                 }, autoDismissTimeout);
             });
+
+
+
+              // Initialize tsParticles
+        tsParticles.load("tsparticles", {
+            // Here go your particle options (JSON configuration)
+            // This is a minimal example for drifting stars/dust
+            background: {
+                color: {
+                    value: "transparent" // Ensure the canvas background is transparent
+                }
+            },
+            fpsLimit: 60,
+            interactivity: {
+                events: {
+                    onClick: {
+                        enable: false // Disable click interaction if not needed
+                    },
+                    onHover: {
+                        enable: false // Disable hover interaction
+                    },
+                    resize: true
+                }
+            },
+            particles: {
+                color: {
+                    value: "#04d1b2" // Particle color (white)
+                },
+                links: {
+                    enable: false // Disable lines between particles
+                },
+                move: {
+                    direction: "none",
+                    enable: true,
+                    outModes: {
+                        default: "out" // Particles move out of bounds and disappear
+                    },
+                    random: true,
+                    speed: 1, // Slower for drifting
+                    straight: false,
+                    warp: true // Allow particles to re-enter from opposite side
+                },
+                number: {
+                    density: {
+                        enable: true,
+                        area: 800
+                    },
+                    value: 150 // Number of particles
+                },
+                opacity: {
+                    value: {
+                        min: 0.1,
+                        max: 0.5
+                    }, // Random opacity for depth
+                    animation: {
+                        enable: true,
+                        speed: 1,
+                        sync: false,
+                        startValue: "random",
+                        destroy: "min"
+                    }
+                },
+                shape: {
+                    type: ["edge", "circle"]
+                },
+                size: {
+                    value: {
+                        min: 1,
+                        max: 3
+                    }, // Random size for particles
+                    animation: {
+                        enable: false // Don't animate size
+                    }
+                }
+            },
+            detectRetina: true
+        });
         });
     </script>
 
