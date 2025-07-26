@@ -232,34 +232,33 @@ def handle_booking_request(id):
     is_available = booking_repo.is_available(date, space_id)
 
     if is_available:
-       
         booking = Booking(None, current_user.id, space_id, date, 'pending')
         booking_id = booking_repo.create(booking)
         
-        requests_repo = RequestRepository(connection)
-        current_request = requests_repo.find_by_booking_id(booking_id)
-        
         # send new request receieved to host
         send_email(
-            connection,
-            booking_id,
-            'emails/host_confirmation.html',
-            'New Booking Request',
-            [current_request.host_email]
+            connection=connection,
+            booking_id=booking_id,
+            template='emails/host_confirmation.html',
+            subject='New Booking Request',
+            user_relationship='host',
+            status='pending'
         )
         
         # send request receieved confirmation to guest
         send_email(
-            connection,
-            booking_id,
-            'emails/guest_confirmation.html',
-            'Booking Request Received',
-            [current_user.email]
+            connection=connection,
+            booking_id=booking_id,
+            template='emails/guest_confirmation.html',
+            subject='Booking Request Received',
+            user_relationship='guest',
+            status='pending'
         )
 
         return redirect('/requests')
     else:
         return render_template('space_details.html', space = space, rejection_message = 'Date already booked')
+
 @app.route('/requests/<int:booking_id>/<action>', methods=['POST'])
 @login_required
 def approve_reject_request(booking_id, action):
@@ -304,12 +303,12 @@ def approve_reject_request(booking_id, action):
         # send emais to rejected guests
         for rejected_id in rejected_booking_ids:
             send_email(
-                connection,
-                rejected_id,
-                'emails/booking_confirmation.html',
-                f'Your Booking Has Been f{action}',
-                [requests_repo.find_by_booking_id(rejected_id).guest_email],
-                action
+                connection=connection,
+                booking_id=rejected_id,
+                template='emails/booking_confirmation.html',
+                subject=f'Your Booking Has Been f{action}',
+                user_relationship='guest',
+                status='rejected'
             )
 
         flash(f'Booking {action}! Any similar requests rejected and notified', flash_category)
@@ -317,16 +316,13 @@ def approve_reject_request(booking_id, action):
         flash(f'Booking {action}!', flash_category)
 
     # send confirmation/rejection email to guest
-    requests_repo = RequestRepository(connection)
-    current_request = requests_repo.find_by_booking_id(booking_id)
-    
     send_email(
-        connection,
-        booking_id,
-        'emails/booking_confirmation.html',
-        f'Your Booking Has Been f{action}',
-        [current_request.guest_email],
-        action
+        connection=connection,
+        booking_id=booking_id,
+        template='emails/booking_confirmation.html',
+        subject=f'Your Booking Has Been {action.capitalize()}',
+        user_relationship='guest',
+        status=action
     )
     
     return redirect(url_for('get_all_requests'))
