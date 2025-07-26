@@ -3,8 +3,8 @@ from flask import g
 from psycopg.rows import dict_row
 
 class DatabaseConnection:
-    DEV_DATABASE_NAME = "solo_bnb"
-    TEST_DATABASE_NAME = "solo_bnb_test"
+    DEV_DATABASE_NAME = "saturnbnb"
+    TEST_DATABASE_NAME = "saturnbnb_test"
     SEED_FILE_PATH = "seeds/bnb_seed.sql" # <--- Define your seed file path here
 
     def __init__(self, test_mode=False):
