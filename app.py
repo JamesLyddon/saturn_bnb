@@ -306,7 +306,7 @@ def approve_reject_request(booking_id, action):
                 connection=connection,
                 booking_id=rejected_id,
                 template='emails/booking_confirmation.html',
-                subject=f'Your Booking Has Been f{action}',
+                subject=f'Your Booking Has Been {action.capitalize()}',
                 user_relationship='guest',
                 status='rejected'
             )
