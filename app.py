@@ -70,10 +70,25 @@ def validate_username(username):
             'That username already exists. Please choose a different one.')
 
 # send email helper
-def send_email(connection, booking_id, template, subject, recipients, status='pending'):
+def send_email(connection, booking_id, template, subject, user_relationship, status='pending'):
     requests_repo = RequestRepository(connection)
     user_repo = UserRepository(connection)
     current_request = requests_repo.find_by_booking_id(booking_id)
+    
+    if not current_request:
+        print(f"Warning: Could not find request details for booking ID {booking_id}. Email not sent.")
+        return
+    
+    email_addresses = {
+        'host': current_request.host_email,
+        'guest': current_request.guest_email
+    }
+    
+    if user_relationship not in email_addresses:
+        print(f"Error: Invalid user_relationship '{user_relationship}' for sending email to booking ID {booking_id}.")
+        return
+    
+    recipients = [email_addresses[user_relationship]]
     
     html_body = render_template(
         template,
@@ -276,18 +291,32 @@ def approve_reject_request(booking_id, action):
     
     flash_category = 'success' if action == 'confirmed' else 'danger'
     
-    # search for similar pending requests and auto reject them
+    # search for similar pending requests
+    # auto reject them
+    # send rejection emails to guest_email
     if action == 'confirmed':
-        bookings_repo.reject_similar_pending(
+        # Get the list of rejected booking IDs and reject similar bookings
+        rejected_booking_ids = bookings_repo.reject_similar_pending(
             confirmed_space_id=booking.space_id,
             confirmed_date=booking.date,
             confirmed_booking_id=booking.id
         )
-        flash(f'Booking {action}! Any similar requests rejected', flash_category)
+        # send emais to rejected guests
+        for rejected_id in rejected_booking_ids:
+            send_email(
+                connection,
+                rejected_id,
+                'emails/booking_confirmation.html',
+                f'Your Booking Has Been f{action}',
+                [requests_repo.find_by_booking_id(rejected_id).guest_email],
+                action
+            )
+
+        flash(f'Booking {action}! Any similar requests rejected and notified', flash_category)
     else:
         flash(f'Booking {action}!', flash_category)
 
-    # Send confirmation/rejection email to guest
+    # send confirmation/rejection email to guest
     requests_repo = RequestRepository(connection)
     current_request = requests_repo.find_by_booking_id(booking_id)
     

@@ -42,8 +42,23 @@ class BookingRepository:
     def reject_similar_pending(self, confirmed_space_id, confirmed_date, confirmed_booking_id):
         """
         Rejects all other pending bookings for a given space_id and date,
-        excluding the booking that was just confirmed
+        excluding the booking that was just confirmed.
+        Returns a list of booking IDs that were rejected.
         """
+        # First, select the IDs of the bookings that will be rejected
+        rejected_booking_ids_rows = self._connection.execute(
+            """
+            SELECT id FROM bookings
+            WHERE
+                space_id = %s AND
+                date = %s AND
+                status = 'pending' AND
+                id != %s;
+            """,
+            [confirmed_space_id, confirmed_date, confirmed_booking_id]
+        )
+
+        # Then, perform the update
         self._connection.execute(
             """
             UPDATE bookings
@@ -56,4 +71,7 @@ class BookingRepository:
             """,
             [confirmed_space_id, confirmed_date, confirmed_booking_id]
         )
-        return None
+
+        # Extract the IDs into a list
+        rejected_booking_ids = [row['id'] for row in rejected_booking_ids_rows]
+        return rejected_booking_ids
